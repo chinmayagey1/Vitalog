@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VitaLog</title>
+<meta name="theme-color" content="#2D6A4F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="VitaLog">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
@@ -55,9 +58,11 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 /* ── SIDEBAR ─────────────────────────────── */
 .sidebar{width:var(--sidebar);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
 
-.sidebar-brand{padding:24px 20px 20px;border-bottom:1px solid var(--border)}
+.sidebar-brand{padding:20px 20px 18px;border-bottom:1px solid var(--border)}
+.logo-mark{display:flex;align-items:center;gap:10px}
+.topbar-brand-mobile{display:none;font-family:var(--font-display);font-size:20px;color:var(--text);letter-spacing:0.01em;margin-right:8px;flex-shrink:0}
+.topbar-brand-mobile em{font-style:italic;color:var(--accent)}
 .brand-wordmark{font-family:var(--font-display);font-size:22px;color:var(--text);letter-spacing:0.01em;line-height:1}
-.brand-wordmark em{font-style:italic;color:var(--accent)}
 .brand-sub{font-size:11px;color:var(--text3);margin-top:4px;letter-spacing:0.04em;text-transform:uppercase;font-weight:500}
 
 .sidebar-nav{flex:1;padding:14px 12px;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
@@ -290,6 +295,8 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
   .atab{flex:none;width:calc(50% - 4px);font-size:11.5px;padding:8px 4px}
   .log-date-bar{flex-wrap:wrap;gap:8px;padding:10px 14px}
   #med-grid{grid-template-columns:1fr !important}
+  .topbar-brand-mobile{display:block}
+  .topbar-title{display:none}
 }
 </style>
 </head>
@@ -328,6 +335,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 <!-- MAIN -->
 <div class="main">
   <header class="topbar">
+    <div class="topbar-brand-mobile">Vita<em>Log</em></div>
     <div class="topbar-title" id="topbar-title">Log today</div>
     <div class="topbar-actions" id="topbar-actions">
       <span class="save-status" id="save-status" style="display:none"><i class="ti ti-check"></i><span id="save-status-text">Saved</span></span>
