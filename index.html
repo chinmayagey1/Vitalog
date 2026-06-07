@@ -546,6 +546,9 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
                 <div class="med-row"><span class="med-name">Mahamanjishthadi kadha</span><div class="med-timing"><button class="med-check" id="med-kadha1" onclick="toggleMed(this)">Taken</button></div></div>
                 <div class="med-row"><span class="med-name">Bharangyadi kadha</span><div class="med-timing"><button class="med-check" id="med-kadha2" onclick="toggleMed(this)">Taken</button></div></div>
               </div>
+              <!-- Custom medicines -->
+              <div id="custom-med-blocks" style="margin-top:8px"></div>
+              <button class="add-row-btn" onclick="addCustomMed()" style="margin-top:8px"><i class="ti ti-plus"></i> Add medicine</button>
             </div>
           </div>
         </div>
@@ -728,7 +731,8 @@ function clearLogForm() {
   document.getElementById('sleep-blocks').innerHTML = '';
   document.getElementById('activity-blocks').innerHTML = '';
   document.getElementById('extra-meal-blocks').innerHTML = '';
-  sleepCount=0; actCount=0; extraMealCount=0;
+  document.getElementById('custom-med-blocks').innerHTML = '';
+  sleepCount=0; actCount=0; extraMealCount=0; customMedCount=0;
   scores={energyMorning:0,energyEvening:0,stress:0};
   ['energy-morning-group','energy-evening-group','stress-group'].forEach(id=>document.getElementById(id)?.querySelectorAll('.score-btn').forEach(b=>b.classList.remove('active')));
   careState={hairoil:null,brushNight:false}; medState={}; pillState={}; readingState=null;
@@ -774,7 +778,7 @@ function collectEntry() {
     drinkNotes: gv('drink-notes'),
     gut: { overall: gv('gut-overall'), notes: gv('gut-notes') },
     mood: { mood: gv('mood'), morningEnergy: scores.energyMorning, eveningEnergy: scores.energyEvening, stress: scores.stress },
-    care: { brushNight: careState.brushNight, hairoil: careState.hairoil, hairoilType: gv('hairoil-type'), medicines: medState, notes: gv('care-notes') },
+    care: { brushNight: careState.brushNight, hairoil: careState.hairoil, hairoilType: gv('hairoil-type'), medicines: medState, customMedicines: collectCustomMeds(), notes: gv('care-notes') },
     outdoor: gv('outdoor-type'),
     reading: { did: readingState, mins: gv('reading-mins'), book: gv('reading-book') },
     bodyNotes: gv('body-notes'),
@@ -862,6 +866,7 @@ function restoreEntry(d) {
     medState={...d.care.medicines};
     Object.entries(medState).forEach(([id,on])=>{if(on){const b=document.getElementById(id);if(b)b.classList.add('on');}});
   }
+  (d.care?.customMedicines||[]).forEach(m=>addCustomMed(m));
   if(d.reading?.did){
     readingState=d.reading.did;
     const yb=document.getElementById('reading-yes'),nb=document.getElementById('reading-no');
@@ -1033,6 +1038,37 @@ function toggleCarePill(btn) {
 
 function toggleMed(btn) { const id=btn.id; medState[id]=!medState[id]; btn.classList.toggle('on',medState[id]); }
 
+let customMedCount = 0;
+function addCustomMed(defaults) {
+  customMedCount++;
+  const id = 'cmed-' + customMedCount;
+  const div = document.createElement('div');
+  div.className = 'subcard'; div.id = id;
+  div.style.marginTop = '0';
+  div.innerHTML = `<button class="subcard-remove" onclick="document.getElementById('${id}').remove()"><i class="ti ti-x"></i></button>
+    <div class="fields-grid col2" style="margin-bottom:10px">
+      <div class="field" style="grid-column:1/-1"><label>Medicine name</label><input type="text" placeholder="e.g. Triphala, Vitamin D..." value="${defaults?.name||''}"></div>
+    </div>
+    <div class="field"><label>Timing</label>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px">
+        <button class="med-check${defaults?.morning?' on':''}" data-slot="morning" onclick="this.classList.toggle('on')">Morning</button>
+        <button class="med-check${defaults?.afternoon?' on':''}" data-slot="afternoon" onclick="this.classList.toggle('on')">Afternoon</button>
+        <button class="med-check${defaults?.evening?' on':''}" data-slot="evening" onclick="this.classList.toggle('on')">Evening</button>
+      </div>
+    </div>`;
+  document.getElementById('custom-med-blocks').appendChild(div);
+}
+
+function collectCustomMeds() {
+  return [...document.querySelectorAll('[id^="cmed-"].subcard')].map(b => {
+    const name = b.querySelector('input')?.value;
+    if (!name) return null;
+    const timing = {};
+    b.querySelectorAll('[data-slot]').forEach(btn => { timing[btn.getAttribute('data-slot')] = btn.classList.contains('on'); });
+    return { name, ...timing };
+  }).filter(Boolean);
+}
+
 function toggleReading(btn) {
   const val=btn.getAttribute('data-val');
   document.getElementById('reading-yes').classList.remove('active-good');
@@ -1154,7 +1190,9 @@ function buildDetail(raw) {
   if(l.care){
     const medObj=l.care.medicines||{};
     const meds=typeof medObj==='object'&&!Array.isArray(medObj)?Object.entries(medObj).filter(([k,v])=>v).map(([k])=>k.replace('med-','').replace(/-/g,' ')):[];
-    if(meds.length) parts.push({l:'Medicines',v:meds.join(', ')});
+    const custom=(l.care.customMedicines||[]).map(m=>m.name+['morning','afternoon','evening'].filter(t=>m[t]).map(t=>' ('+t+')').join(''));
+    const allMeds=[...meds,...custom];
+    if(allMeds.length) parts.push({l:'Medicines',v:allMeds.join(', ')});
     if(l.care.brushNight||(Array.isArray(l.care.brushing)&&l.care.brushing.includes('night'))) parts.push({l:'Brushing',v:'Night brush ✓'});
     if(l.care.hairoil==='yes') parts.push({l:'Hair oil',v:l.care.hairoilType||'Yes'});
     if(l.care.notes) parts.push({l:'Care notes',v:l.care.notes});
