@@ -152,7 +152,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .med-row{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);flex-wrap:wrap}
 .med-name{font-size:13px;font-weight:500;color:var(--text);flex:1;min-width:120px;font-style:italic}
 .med-timing{display:flex;gap:5px;flex-shrink:0;flex-wrap:wrap}
-.med-check{padding:5px 11px;border-radius:99px;border:1.5px solid var(--border-strong);background:var(--surface);color:var(--text3);font-size:12px;font-weight:500;cursor:pointer;transition:all 0.15s;font-family:var(--font);white-space:nowrap}
+.med-check{padding:5px 10px;border-radius:99px;border:1.5px solid var(--border-strong);background:var(--surface);color:var(--text3);font-size:11.5px;font-weight:500;cursor:pointer;transition:all 0.15s;font-family:var(--font);white-space:nowrap}
 .med-check:hover{border-color:var(--accent)}
 .med-check.on{background:var(--accent-light);border-color:var(--accent);color:var(--accent-text)}
 
@@ -289,6 +289,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
   .analyse-tabs{flex-wrap:wrap;gap:4px}
   .atab{flex:none;width:calc(50% - 4px);font-size:11.5px;padding:8px 4px}
   .log-date-bar{flex-wrap:wrap;gap:8px;padding:10px 14px}
+  #med-grid{grid-template-columns:1fr !important}
 }
 </style>
 </head>
@@ -531,7 +532,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
             </div>
             <div class="field">
               <label>Medicines</label>
-              <div class="med-list" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px">
+              <div class="med-list" id="med-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px">
                 <div class="med-row"><span class="med-name">Avipattikar</span><div class="med-timing"><button class="med-check" id="med-avipattikar-morning" onclick="toggleMed(this)">Morning</button><button class="med-check" id="med-avipattikar-evening" onclick="toggleMed(this)">Evening</button></div></div>
                 <div class="med-row"><span class="med-name">Amla powder</span><div class="med-timing"><button class="med-check" id="med-amla-lunch" onclick="toggleMed(this)">Lunch</button><button class="med-check" id="med-amla-dinner" onclick="toggleMed(this)">Dinner</button></div></div>
                 <div class="med-row"><span class="med-name">Mahamanjishthadi kadha</span><div class="med-timing"><button class="med-check" id="med-kadha1" onclick="toggleMed(this)">Taken</button></div></div>
