@@ -47,16 +47,7 @@
   --sidebar: 232px;
 }
 
-@media(prefers-color-scheme:dark){:root{
-  --bg:#141210;--surface:#1C1A16;--surface2:#232019;--surface3:#2C2820;
-  --border:rgba(255,240,200,0.08);--border-strong:rgba(255,240,200,0.14);
-  --text:#F0EDE4;--text2:#A09880;--text3:#5C5848;
-  --accent-light:#0D2E1E;--accent-text:#6DBFA0;
-  --gold-light:#2A2008;--gold-text:#D4A832;
-  --red-light:#2A0E0E;--red-text:#E08080;
-  --blue-light:#0E1C30;--blue-text:#80A8E0;
-  --plum-light:#1E1030;--plum-text:#C0A0E0;
-}}
+/* Force light theme always */
 
 html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
 .app{display:flex;height:100vh;overflow:hidden}
@@ -158,10 +149,10 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 
 /* ── MEDICINE CHECKLIST ───────────────────── */
 .med-list{display:flex;flex-direction:column;gap:10px}
-.med-row{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius)}
-.med-name{font-size:13.5px;font-weight:500;color:var(--text);flex:1;font-style:italic}
-.med-timing{display:flex;gap:5px}
-.med-check{padding:5px 13px;border-radius:99px;border:1.5px solid var(--border-strong);background:var(--surface);color:var(--text3);font-size:12px;font-weight:500;cursor:pointer;transition:all 0.15s;font-family:var(--font)}
+.med-row{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);flex-wrap:wrap}
+.med-name{font-size:13px;font-weight:500;color:var(--text);flex:1;min-width:120px;font-style:italic}
+.med-timing{display:flex;gap:5px;flex-shrink:0;flex-wrap:wrap}
+.med-check{padding:5px 11px;border-radius:99px;border:1.5px solid var(--border-strong);background:var(--surface);color:var(--text3);font-size:12px;font-weight:500;cursor:pointer;transition:all 0.15s;font-family:var(--font);white-space:nowrap}
 .med-check:hover{border-color:var(--accent)}
 .med-check.on{background:var(--accent-light);border-color:var(--accent);color:var(--accent-text)}
 
@@ -328,7 +319,8 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
         <button class="gdrive-btn sm" id="gdrive-signout-btn" onclick="gdriveSignOut()" style="display:none"><i class="ti ti-logout"></i> Sign out</button>
       </div>
     </div>
-    <button onclick="exportLogs()" style="display:none" id="emergency-export" class="gdrive-btn sm" style="margin-top:6px"><i class="ti ti-download"></i> Emergency export</button>
+    <button onclick="exportLogs()" id="emergency-export" class="gdrive-btn sm" style="margin-top:6px;display:none"><i class="ti ti-download"></i> One-time data export</button>
+    <label class="gdrive-btn sm" id="emergency-import" style="margin-top:4px;display:none;cursor:pointer"><i class="ti ti-upload"></i> One-time data import<input type="file" accept=".json" style="display:none" onchange="importLogs(event)"></label>
   </div>
 </aside>
 
@@ -641,7 +633,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 
 <script>
 // ─── CONFIG ────────────────────────────────
-const GDRIVE_CLIENT_ID = '882450009885-3d2t1981pcdlqsk8sb13fggk68b709c7.apps.googleusercontent.com';
+const GDRIVE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID_HERE';
 const GDRIVE_SCOPES = 'https://www.googleapis.com/auth/drive.appdata';
 const STORAGE_KEY = 'vitalog-v3';
 const DRAFT_KEY = 'vitalog-draft-v3';
@@ -1309,9 +1301,16 @@ function initGDrive() {
 function gdriveUpdateUI(state) {
   const pill=document.getElementById('gdrive-status'),txt=document.getElementById('gdrive-status-text');
   const signIn=document.getElementById('gdrive-btn'),sync=document.getElementById('gdrive-sync-btn'),out=document.getElementById('gdrive-signout-btn');
-  if(state==='connected'){pill.className='gdrive-pill ok';pill.querySelector('i').className='ti ti-brand-google-drive';txt.textContent='Drive synced';signIn.style.display='none';sync.style.display='flex';out.style.display='flex';}
-  else if(state==='disconnected'){pill.className='gdrive-pill';pill.querySelector('i').className='ti ti-cloud-off';txt.textContent='Not connected';signIn.style.display='flex';sync.style.display='none';out.style.display='none';}
-  else if(state==='syncing'){txt.textContent='Syncing…';}
+  const expBtn=document.getElementById('emergency-export'),impBtn=document.getElementById('emergency-import');
+  if(state==='connected'){
+    pill.className='gdrive-pill ok';pill.querySelector('i').className='ti ti-brand-google-drive';txt.textContent='Drive synced';
+    signIn.style.display='none';sync.style.display='flex';out.style.display='flex';
+    if(expBtn)expBtn.style.display='none';if(impBtn)impBtn.style.display='none';
+  } else if(state==='disconnected'){
+    pill.className='gdrive-pill';pill.querySelector('i').className='ti ti-cloud-off';txt.textContent='Not connected';
+    signIn.style.display='flex';sync.style.display='none';out.style.display='none';
+    if(expBtn)expBtn.style.display='flex';if(impBtn)impBtn.style.display='flex';
+  } else if(state==='syncing'){txt.textContent='Syncing…';}
 }
 
 function gdriveSignIn() {
@@ -1363,6 +1362,28 @@ function exportLogs() {
   const url=URL.createObjectURL(blob);const a=document.createElement('a');
   a.href=url;a.download=`vitalog-backup-${todayStr()}.json`;a.click();URL.revokeObjectURL(url);
   showToast('Backup downloaded');
+}
+
+function importLogs(event) {
+  const file=event.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try {
+      const imported=JSON.parse(e.target.result);
+      if(!Array.isArray(imported)){showToast('Invalid file format');return;}
+      const conflicts=imported.filter(entry=>logs.some(l=>l.date===entry.date));
+      if(conflicts.length>0&&!confirm(`${conflicts.length} existing entr${conflicts.length===1?'y':'ies'} will be overwritten. Continue?`)){event.target.value='';return;}
+      const merged=[...logs];
+      imported.forEach(entry=>{const idx=merged.findIndex(l=>l.date===entry.date);if(idx>=0)merged[idx]=entry;else merged.push(entry);});
+      merged.sort((a,b)=>b.date.localeCompare(a.date));
+      logs=merged;
+      localStorage.setItem(STORAGE_KEY,JSON.stringify(logs));
+      if(gdriveToken)gdriveUpload(false);
+      showToast(`Imported ${imported.length} entries ✓`);
+      renderHistory();
+    } catch(e){showToast('Could not read file');}
+  };
+  reader.readAsText(file);event.target.value='';
 }
 
 // ─── UTILS ─────────────────────────────────
