@@ -618,30 +618,32 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
         </div>
       </div>
 
-      <!-- ── SETTINGS PAGE (mobile) ─────────── -->
-      <div id="page-settings" style="display:none">
-        <div class="card" style="margin-bottom:16px">
-          <div class="card-header"><div class="card-icon green"><i class="ti ti-brand-google-drive"></i></div><div><div class="card-title">Google Drive sync</div><div class="card-sub">Keep data across devices</div></div></div>
-          <div class="card-body">
-            <div class="gdrive-pill" id="gdrive-status-m" style="margin-bottom:12px"><i class="ti ti-cloud-off"></i><span id="gdrive-status-text-m">Not connected</span></div>
-            <button class="btn btn-primary" id="gdrive-btn-m" onclick="gdriveSignIn()" style="width:100%;justify-content:center;padding:11px;margin-bottom:8px"><i class="ti ti-brand-google-drive"></i> Sign in with Google</button>
-            <button class="btn" id="gdrive-sync-btn-m" onclick="gdriveSyncNow()" style="width:100%;justify-content:center;padding:11px;margin-bottom:8px;display:none"><i class="ti ti-refresh"></i> Sync now</button>
-            <button class="btn" id="gdrive-signout-btn-m" onclick="gdriveSignOut()" style="width:100%;justify-content:center;display:none;color:var(--text3)"><i class="ti ti-logout"></i> Sign out of Drive</button>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header"><div class="card-icon blue"><i class="ti ti-arrows-transfer-up"></i></div><div><div class="card-title">Transfer data</div><div class="card-sub">Move data from another device</div></div></div>
-          <div class="card-body">
-            <p style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.6">Export from your laptop, then import here to bring your data across. Once Drive is connected this isn't needed.</p>
-            <button class="btn" onclick="exportLogs()" style="width:100%;justify-content:center;padding:11px;margin-bottom:8px"><i class="ti ti-download"></i> Export backup</button>
-            <label class="btn" style="width:100%;justify-content:center;padding:11px;cursor:pointer"><i class="ti ti-upload"></i> Import backup<input type="file" accept=".json" style="display:none" onchange="importLogs(event)"></label>
-          </div>
+    </div><!-- end page-analyse -->
+
+    <!-- ── SETTINGS PAGE ─────────────────────── -->
+    <div id="page-settings" style="display:none">
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header"><div class="card-icon green"><i class="ti ti-brand-google-drive"></i></div><div><div class="card-title">Google Drive sync</div><div class="card-sub">Keep data across devices</div></div></div>
+        <div class="card-body">
+          <div class="gdrive-pill" id="gdrive-status-m" style="margin-bottom:12px"><i class="ti ti-cloud-off"></i><span id="gdrive-status-text-m">Not connected</span></div>
+          <button class="btn btn-primary" id="gdrive-btn-m" onclick="gdriveSignIn()" style="width:100%;justify-content:center;padding:11px;margin-bottom:8px"><i class="ti ti-brand-google-drive"></i> Sign in with Google</button>
+          <button class="btn" id="gdrive-sync-btn-m" onclick="gdriveSyncNow()" style="width:100%;justify-content:center;padding:11px;margin-bottom:8px;display:none"><i class="ti ti-refresh"></i> Sync now</button>
+          <button class="btn" id="gdrive-signout-btn-m" onclick="gdriveSignOut()" style="width:100%;justify-content:center;display:none;color:var(--text3)"><i class="ti ti-logout"></i> Sign out of Drive</button>
         </div>
       </div>
+      <div class="card">
+        <div class="card-header"><div class="card-icon blue"><i class="ti ti-arrows-transfer-up"></i></div><div><div class="card-title">Transfer data</div><div class="card-sub">Move data from another device</div></div></div>
+        <div class="card-body">
+          <p style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.6">Export from your laptop, then import here to bring your data across. Once Drive is connected this isn't needed.</p>
+          <button class="btn" onclick="exportLogs()" style="width:100%;justify-content:center;padding:11px;margin-bottom:8px"><i class="ti ti-download"></i> Export backup</button>
+          <label class="btn" style="width:100%;justify-content:center;padding:11px;cursor:pointer"><i class="ti ti-upload"></i> Import backup<input type="file" accept=".json" style="display:none" onchange="importLogs(event)"></label>
+        </div>
+      </div>
+    </div><!-- end page-settings -->
 
-    </div>
-  </div>
-</div>
+  </div><!-- end content -->
+  </div><!-- end main -->
+</div><!-- end app -->
 
 <nav class="bottom-nav">
   <button class="bnav-item active" id="bnav-log" onclick="showPage('log')"><i class="ti ti-pencil-plus"></i>Log</button>
