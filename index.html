@@ -521,7 +521,6 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
                 <label>Hair oil</label>
                 <div class="pill-group" style="margin-top:2px">
                   <button class="pill" data-val="yes" data-group="hairoil" onclick="toggleCarePill(this)">Applied today</button>
-                  <button class="pill" data-val="no" data-group="hairoil" onclick="toggleCarePill(this)">Not today</button>
                 </div>
                 <input type="text" id="hairoil-type" placeholder="Which oil?" style="display:none;font-size:13px;padding:7px 10px;border:1px solid var(--border-strong);border-radius:var(--radius);background:var(--surface2);color:var(--text);width:100%;font-family:var(--font);outline:none;margin-top:6px;">
               </div>
@@ -618,16 +617,37 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
           </div></div>
         </div>
       </div>
-    </div>
 
+      <!-- ── SETTINGS PAGE (mobile) ─────────── -->
+      <div id="page-settings" style="display:none">
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-header"><div class="card-icon green"><i class="ti ti-brand-google-drive"></i></div><div><div class="card-title">Google Drive sync</div><div class="card-sub">Keep data across devices</div></div></div>
+          <div class="card-body">
+            <div class="gdrive-pill" id="gdrive-status-m" style="margin-bottom:12px"><i class="ti ti-cloud-off"></i><span id="gdrive-status-text-m">Not connected</span></div>
+            <button class="btn btn-primary" id="gdrive-btn-m" onclick="gdriveSignIn()" style="width:100%;justify-content:center;padding:11px;margin-bottom:8px"><i class="ti ti-brand-google-drive"></i> Sign in with Google</button>
+            <button class="btn" id="gdrive-sync-btn-m" onclick="gdriveSyncNow()" style="width:100%;justify-content:center;padding:11px;margin-bottom:8px;display:none"><i class="ti ti-refresh"></i> Sync now</button>
+            <button class="btn" id="gdrive-signout-btn-m" onclick="gdriveSignOut()" style="width:100%;justify-content:center;display:none;color:var(--text3)"><i class="ti ti-logout"></i> Sign out of Drive</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-icon blue"><i class="ti ti-arrows-transfer-up"></i></div><div><div class="card-title">Transfer data</div><div class="card-sub">Move data from another device</div></div></div>
+          <div class="card-body">
+            <p style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.6">Export from your laptop, then import here to bring your data across. Once Drive is connected this isn't needed.</p>
+            <button class="btn" onclick="exportLogs()" style="width:100%;justify-content:center;padding:11px;margin-bottom:8px"><i class="ti ti-download"></i> Export backup</button>
+            <label class="btn" style="width:100%;justify-content:center;padding:11px;cursor:pointer"><i class="ti ti-upload"></i> Import backup<input type="file" accept=".json" style="display:none" onchange="importLogs(event)"></label>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
-</div>
 </div>
 
 <nav class="bottom-nav">
   <button class="bnav-item active" id="bnav-log" onclick="showPage('log')"><i class="ti ti-pencil-plus"></i>Log</button>
   <button class="bnav-item" id="bnav-history" onclick="showPage('history')"><i class="ti ti-history"></i>History</button>
   <button class="bnav-item" id="bnav-analyse" onclick="showPage('analyse')"><i class="ti ti-chart-bar"></i>Analyse</button>
+  <button class="bnav-item" id="bnav-settings" onclick="showPage('settings')"><i class="ti ti-settings"></i>Settings</button>
 </nav>
 <div class="toast" id="toast"></div>
 
@@ -845,12 +865,12 @@ function restoreEntry(d) {
 // ─── NAVIGATION ────────────────────────────
 function showPage(page) {
   if(page!=='log'&&isDirty&&confirm('Unsaved changes — save before leaving?')) saveLog(false);
-  ['log','history','analyse'].forEach(p=>{
+  ['log','history','analyse','settings'].forEach(p=>{
     document.getElementById('page-'+p).style.display=p===page?'block':'none';
     document.getElementById('nav-'+p)?.classList.toggle('active',p===page);
     document.getElementById('bnav-'+p)?.classList.toggle('active',p===page);
   });
-  const titles={log:'Log today',history:'History',analyse:'Charts & analysis'};
+  const titles={log:'Log today',history:'History',analyse:'Charts & analysis',settings:'Settings'};
   document.getElementById('topbar-title').textContent=titles[page];
   const ae=document.getElementById('topbar-actions');
   if(page==='log'){ae.innerHTML='<span class="save-status" id="save-status" style="display:none"><i class="ti ti-check"></i><span id="save-status-text">Saved</span></span><button class="btn btn-primary" onclick="saveLog()"><i class="ti ti-check"></i> Save log</button>';}
@@ -907,10 +927,11 @@ function addActivity() {
       <div class="field"><label>Activity</label>
         <select>
           <option value="">—</option>
+          <optgroup label="Yoga"><option>Evolve Yoga</option><option>Hatha Yoga</option></optgroup>
           <optgroup label="Workouts"><option>HRX Workout</option><option>Adidas Strength+</option><option>Bodyweight workout</option><option>Gym / weights</option></optgroup>
-          <optgroup label="Cardio"><option>Running</option><option>Walking</option><option>Cycling</option><option>Swimming</option><option>Trekking</option></optgroup>
           <optgroup label="Sports"><option>Football</option><option>Table tennis</option><option>Badminton</option><option>Cricket</option></optgroup>
-          <optgroup label="Other"><option>Hatha Yoga</option><option>Rest day</option><option>Other</option></optgroup>
+          <optgroup label="Cardio"><option>Running</option><option>Walking</option><option>Cycling</option><option>Swimming</option><option>Trekking</option></optgroup>
+          <optgroup label="Other"><option>Rest day</option><option>Other</option></optgroup>
         </select>
       </div>
       <div class="field"><label>Muscle focus</label>
@@ -1299,18 +1320,33 @@ function initGDrive() {
 }
 
 function gdriveUpdateUI(state) {
+  // Sidebar (desktop)
   const pill=document.getElementById('gdrive-status'),txt=document.getElementById('gdrive-status-text');
   const signIn=document.getElementById('gdrive-btn'),sync=document.getElementById('gdrive-sync-btn'),out=document.getElementById('gdrive-signout-btn');
   const expBtn=document.getElementById('emergency-export'),impBtn=document.getElementById('emergency-import');
+  // Settings page (mobile)
+  const pillM=document.getElementById('gdrive-status-m'),txtM=document.getElementById('gdrive-status-text-m');
+  const signInM=document.getElementById('gdrive-btn-m'),syncM=document.getElementById('gdrive-sync-btn-m'),outM=document.getElementById('gdrive-signout-btn-m');
+
   if(state==='connected'){
-    pill.className='gdrive-pill ok';pill.querySelector('i').className='ti ti-brand-google-drive';txt.textContent='Drive synced';
-    signIn.style.display='none';sync.style.display='flex';out.style.display='flex';
+    // Desktop sidebar
+    if(pill){pill.className='gdrive-pill ok';pill.querySelector('i').className='ti ti-brand-google-drive';txt.textContent='Drive synced';}
+    if(signIn)signIn.style.display='none';if(sync)sync.style.display='flex';if(out)out.style.display='flex';
     if(expBtn)expBtn.style.display='none';if(impBtn)impBtn.style.display='none';
+    // Mobile settings
+    if(pillM){pillM.className='gdrive-pill ok';pillM.querySelector('i').className='ti ti-brand-google-drive';txtM.textContent='Drive synced';}
+    if(signInM)signInM.style.display='none';if(syncM)syncM.style.display='flex';if(outM)outM.style.display='flex';
   } else if(state==='disconnected'){
-    pill.className='gdrive-pill';pill.querySelector('i').className='ti ti-cloud-off';txt.textContent='Not connected';
-    signIn.style.display='flex';sync.style.display='none';out.style.display='none';
+    // Desktop sidebar
+    if(pill){pill.className='gdrive-pill';pill.querySelector('i').className='ti ti-cloud-off';txt.textContent='Not connected';}
+    if(signIn)signIn.style.display='flex';if(sync)sync.style.display='none';if(out)out.style.display='none';
     if(expBtn)expBtn.style.display='flex';if(impBtn)impBtn.style.display='flex';
-  } else if(state==='syncing'){txt.textContent='Syncing…';}
+    // Mobile settings
+    if(pillM){pillM.className='gdrive-pill';pillM.querySelector('i').className='ti ti-cloud-off';txtM.textContent='Not connected';}
+    if(signInM)signInM.style.display='flex';if(syncM)syncM.style.display='none';if(outM)outM.style.display='none';
+  } else if(state==='syncing'){
+    if(txt)txt.textContent='Syncing…';if(txtM)txtM.textContent='Syncing…';
+  }
 }
 
 function gdriveSignIn() {
