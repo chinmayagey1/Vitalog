@@ -247,6 +247,51 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .weekly-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;box-shadow:var(--shadow);margin-bottom:16px}
 .weekly-box h3{font-family:var(--font-display);font-size:17px;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px}
 .weekly-box h3 i{color:var(--accent);font-size:18px}
+
+/* ── ACTIVITY STRIP ──────────────────────── */
+.act-strip-wrap{overflow-x:auto;padding-bottom:12px;margin-bottom:16px}
+.act-strip{display:flex;gap:6px;min-width:max-content}
+.act-day{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:44px}
+.act-day-label{font-size:9px;font-weight:600;color:var(--text3);text-align:center;letter-spacing:0.03em}
+.act-day-date{font-size:12px;font-weight:600;color:var(--text2);text-align:center}
+.act-day.today .act-day-date{color:var(--accent);font-weight:700}
+.act-day-pills{display:flex;flex-direction:column;gap:2px;align-items:center;min-height:22px}
+.act-pill{font-size:9.5px;font-weight:600;color:#fff;padding:2px 6px;border-radius:99px;white-space:nowrap;letter-spacing:0.02em}
+.act-pill.empty{background:var(--surface3);color:var(--text3);font-weight:400}
+.act-pill.rest{background:#9CA3AF;color:#fff}
+
+/* Activity breakdown grid */
+.act-breakdown-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+
+/* ── GUT INSIGHTS ────────────────────────── */
+.gut-factor-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.gut-factor-row:last-child{border-bottom:none}
+.gut-factor-icon{font-size:18px;width:28px;flex-shrink:0;text-align:center}
+.gut-factor-label{font-size:13px;color:var(--text2);flex:1}
+.gut-factor-val{font-size:13.5px;font-weight:600;color:var(--text);min-width:60px;text-align:right}
+.gut-factor-note{font-size:11.5px;color:var(--text3);min-width:80px;text-align:right}
+.week-compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.week-col{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
+.week-col-title{font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px}
+.week-col-gut{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:12.5px;color:var(--text2)}
+.impact-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.impact-row:last-child{border-bottom:none}
+.impact-act{font-size:13px;font-weight:500;color:var(--text);min-width:120px;display:flex;align-items:center;gap:6px}
+.impact-metrics{display:flex;gap:16px;flex-wrap:wrap}
+.impact-metric{font-size:12px;color:var(--text2)}
+.impact-metric strong{color:var(--text);font-weight:600}
+.impact-n{font-size:11px;color:var(--text3);margin-left:auto}
+.gut-placeholder{text-align:center;padding:24px;color:var(--text3);font-size:13px;line-height:1.6}
+.gut-placeholder i{font-size:28px;display:block;margin-bottom:8px;opacity:0.4}
+.pattern-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px}
+.pattern-card:last-child{margin-bottom:0}
+.pattern-title{font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px}
+.pattern-factors{display:flex;flex-wrap:wrap;gap:6px}
+.pattern-factor{font-size:12px;padding:4px 10px;border-radius:99px;background:var(--surface);border:1px solid var(--border);color:var(--text2)}
+.act-breakdown-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:center;gap:10px}
+.act-breakdown-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.act-breakdown-name{font-size:12.5px;color:var(--text2);flex:1}
+.act-breakdown-count{font-size:16px;font-weight:700;color:var(--text);font-family:var(--font-display)}
 .weekly-text{font-size:14px;color:var(--text2);line-height:1.75;white-space:pre-wrap}
 
 .ai-out{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;font-size:13.5px;line-height:1.75;color:var(--text);white-space:pre-wrap;min-height:80px}
@@ -297,6 +342,15 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
   #med-grid{grid-template-columns:1fr !important}
   .topbar-brand-mobile{display:block}
   .topbar-title{display:none}
+  /* Gut insights mobile */
+  .week-compare-grid{grid-template-columns:1fr}
+  .impact-row{flex-wrap:wrap;gap:6px}
+  .impact-act{min-width:100%;margin-bottom:2px}
+  .impact-metrics{gap:10px}
+  .act-breakdown-grid{grid-template-columns:1fr 1fr}
+  /* Activity strip mobile */
+  .act-day{min-width:38px}
+  .act-pill{font-size:9px;padding:2px 5px}
 }
 </style>
 </head>
@@ -410,7 +464,8 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
                     <div class="field"><label>Time</label><input type="time" id="bf-time" onchange="updateMealTime('breakfast')"></div>
                     <div class="field"><label>Where?</label><select id="bf-where"><option value="">—</option><option>Home-cooked</option><option>Canteen</option><option>Restaurant</option><option>Street food</option><option>Ordered in</option><option>Packaged</option></select></div>
                   </div>
-                  <div class="fields-grid col2">
+                  <div class="fields-grid col3">
+                    <div class="field"><label>Type</label><select id="bf-type"><option value="">—</option><option>Veg</option><option>Egg</option><option>Non-veg</option></select></div>
                     <div class="field"><label>Felt after?</label><select id="bf-after"><option value="">—</option><option>Fine</option><option>Satisfied</option><option>Bloated</option><option>Sluggish</option><option>Heavy / acidic</option></select></div>
                     <div class="field"><label>Notes</label><input type="text" id="bf-notes" placeholder="e.g. spicy, oily, high fibre..."></div>
                   </div>
@@ -429,7 +484,8 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
                     <div class="field"><label>Time</label><input type="time" id="lu-time" onchange="updateMealTime('lunch')"></div>
                     <div class="field"><label>Where?</label><select id="lu-where"><option value="">—</option><option>Home-cooked</option><option>Canteen</option><option>Restaurant</option><option>Street food</option><option>Ordered in</option><option>Packaged</option></select></div>
                   </div>
-                  <div class="fields-grid col2">
+                  <div class="fields-grid col3">
+                    <div class="field"><label>Type</label><select id="lu-type"><option value="">—</option><option>Veg</option><option>Egg</option><option>Non-veg</option></select></div>
                     <div class="field"><label>Felt after?</label><select id="lu-after"><option value="">—</option><option>Fine</option><option>Satisfied</option><option>Bloated</option><option>Sluggish</option><option>Heavy / acidic</option></select></div>
                     <div class="field"><label>Notes</label><input type="text" id="lu-notes" placeholder=""></div>
                   </div>
@@ -448,7 +504,8 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
                     <div class="field"><label>Time</label><input type="time" id="di-time" onchange="updateMealTime('dinner')"></div>
                     <div class="field"><label>Where?</label><select id="di-where"><option value="">—</option><option>Home-cooked</option><option>Canteen</option><option>Restaurant</option><option>Street food</option><option>Ordered in</option><option>Packaged</option></select></div>
                   </div>
-                  <div class="fields-grid col2">
+                  <div class="fields-grid col3">
+                    <div class="field"><label>Type</label><select id="di-type"><option value="">—</option><option>Veg</option><option>Egg</option><option>Non-veg</option></select></div>
                     <div class="field"><label>Felt after?</label><select id="di-after"><option value="">—</option><option>Fine</option><option>Satisfied</option><option>Bloated</option><option>Sluggish</option><option>Heavy / acidic</option></select></div>
                     <div class="field"><label>Notes</label><input type="text" id="di-notes" placeholder=""></div>
                   </div>
@@ -458,7 +515,18 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
             <div id="extra-meal-blocks"></div>
             <button class="add-row-btn" onclick="addExtraMeal()" style="margin-top:10px"><i class="ti ti-plus"></i> Add snack / extra meal</button>
             <div class="section-divider"></div>
-            <div class="field"><label>Caffeine / drinks</label><input type="text" id="drink-notes" placeholder="e.g. 2 coffees, green tea, nimbu pani..."></div>
+            <div class="fields-grid col3">
+              <div class="field"><label>Water (litres)</label><input type="number" id="water-litres" min="0" max="10" step="0.5" placeholder="e.g. 2.5"></div>
+              <div class="field"><label>Water level</label>
+                <select id="water-level">
+                  <option value="">—</option>
+                  <option>Low</option>
+                  <option>Medium</option>
+                  <option>High</option>
+                </select>
+              </div>
+              <div class="field"><label>Caffeine / drinks</label><input type="text" id="drink-notes" placeholder="e.g. 2 coffees, green tea..."></div>
+            </div>
           </div>
         </div>
 
@@ -570,6 +638,15 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
     <!-- ── HISTORY PAGE ─────────────────── -->
     <div id="page-history" style="display:none">
       <div class="stats-row" id="stats-row"></div>
+      <!-- Filter bar -->
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px" id="history-filters">
+        <button class="pill active-good" onclick="filterHistory('all')" id="hf-all">All</button>
+        <button class="pill" onclick="filterHistory('good-gut')" id="hf-good-gut">Good gut</button>
+        <button class="pill" onclick="filterHistory('bad-gut')" id="hf-bad-gut">Bad gut</button>
+        <button class="pill" onclick="filterHistory('active')" id="hf-active">Active</button>
+        <button class="pill" onclick="filterHistory('high-stress')" id="hf-high-stress">High stress</button>
+        <button class="pill" onclick="filterHistory('yoga')" id="hf-yoga">Yoga</button>
+      </div>
       <div class="card"><div class="card-body" id="history-list" style="padding:0 22px"></div></div>
     </div>
 
@@ -577,6 +654,8 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
     <div id="page-analyse" style="display:none">
       <div class="analyse-tabs">
         <button class="atab active" id="atab-charts" onclick="switchAnalyseTab('charts')"><i class="ti ti-chart-line"></i> Charts</button>
+        <button class="atab" id="atab-activity" onclick="switchAnalyseTab('activity')"><i class="ti ti-calendar-month"></i> Activity</button>
+        <button class="atab" id="atab-gut" onclick="switchAnalyseTab('gut')"><i class="ti ti-heart-rate-monitor"></i> Gut insights</button>
         <button class="atab" id="atab-correlations" onclick="switchAnalyseTab('correlations')"><i class="ti ti-arrows-exchange"></i> Correlations</button>
         <button class="atab" id="atab-streaks" onclick="switchAnalyseTab('streaks')"><i class="ti ti-flame"></i> Streaks</button>
         <button class="atab" id="atab-weekly" onclick="switchAnalyseTab('weekly')"><i class="ti ti-calendar-week"></i> Weekly</button>
@@ -585,16 +664,64 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 
       <div id="apage-charts">
         <div class="chart-grid">
-          <div class="chart-card"><div class="chart-title">Sleep duration</div><div class="chart-sub">Hours per night</div><div class="chart-wrap"><canvas id="chart-sleep"></canvas></div></div>
+          <div class="chart-card"><div class="chart-title">Sleep duration</div><div class="chart-sub" id="sleep-chart-sub">Hours per night</div><div class="chart-wrap"><canvas id="chart-sleep"></canvas></div></div>
           <div class="chart-card"><div class="chart-title">Energy levels</div><div class="chart-sub">Morning vs evening (1–5)</div><div class="chart-wrap"><canvas id="chart-energy"></canvas></div></div>
           <div class="chart-card"><div class="chart-title">Steps</div><div class="chart-sub">Daily step count</div><div class="chart-wrap"><canvas id="chart-steps"></canvas></div></div>
           <div class="chart-card"><div class="chart-title">Stress</div><div class="chart-sub">Stress level (1–5)</div><div class="chart-wrap"><canvas id="chart-stress"></canvas></div></div>
-          <div class="chart-card" style="grid-column:1/-1"><div class="chart-title">Gut health</div><div class="chart-sub">Daily rating</div><div class="chart-wrap"><canvas id="chart-gut"></canvas></div></div>
+          <div class="chart-card" style="grid-column:1/-1"><div class="chart-title">Gut health</div><div class="chart-sub" id="gut-chart-sub">Daily rating</div><div class="chart-wrap"><canvas id="chart-gut"></canvas></div></div>
+        </div>
+      </div>
+
+      <!-- Activity strip tab -->
+      <div id="apage-activity" style="display:none">
+        <div class="chart-card" style="margin-bottom:16px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <div><div class="chart-title">Activity calendar</div><div class="chart-sub">Scroll to see all days</div></div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <button onclick="changeCalMonth(-1)" style="border:none;background:var(--surface2);border-radius:var(--radius-sm);padding:5px 8px;cursor:pointer;font-size:14px;color:var(--text2)">‹</button>
+              <select id="cal-month-select" onchange="renderActivityCalendar()" style="font-size:13px;font-family:var(--font);border:1px solid var(--border-strong);border-radius:var(--radius-sm);background:var(--surface2);color:var(--text);padding:5px 8px;outline:none"></select>
+              <button onclick="changeCalMonth(1)" style="border:none;background:var(--surface2);border-radius:var(--radius-sm);padding:5px 8px;cursor:pointer;font-size:14px;color:var(--text2)">›</button>
+            </div>
+          </div>
+          <div class="act-strip-wrap"><div class="act-strip" id="act-strip"></div></div>
+          <div id="act-strip-legend" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px"></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title" style="margin-bottom:14px">All-time breakdown</div>
+          <div class="act-breakdown-grid" id="activity-breakdown"></div>
+        </div>
+      </div>
+
+      <!-- Gut insights tab -->
+      <div id="apage-gut" style="display:none">
+        <div class="chart-card" style="margin-bottom:16px">
+          <div class="chart-title" style="margin-bottom:4px">This week's gut factors</div>
+          <div class="chart-sub" style="margin-bottom:16px">Benchmarked against your own best and worst weeks · needs 4+ weeks of data</div>
+          <div id="gut-scorecard-content"></div>
+        </div>
+        <div class="chart-card" style="margin-bottom:16px">
+          <div class="chart-title" style="margin-bottom:4px">Week comparison</div>
+          <div class="chart-sub" style="margin-bottom:16px">This week vs last week across key factors</div>
+          <div id="gut-week-compare"></div>
+        </div>
+        <div class="chart-card" style="margin-bottom:16px">
+          <div class="chart-title" style="margin-bottom:4px">Activity → next day</div>
+          <div class="chart-sub" style="margin-bottom:16px">How each activity type affects your energy, mood and gut the following day</div>
+          <div id="gut-activity-impact"></div>
+        </div>
+        <div class="chart-card" style="margin-bottom:16px">
+          <div class="chart-title" style="margin-bottom:4px">7-day rolling patterns</div>
+          <div class="chart-sub" style="margin-bottom:16px">Active weeks vs less active — gut and energy comparison</div>
+          <div id="gut-rolling"></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title" style="margin-bottom:4px">Pattern finder</div>
+          <div class="chart-sub" style="margin-bottom:16px">What your best and worst gut weeks had in common · needs 4+ weeks</div>
+          <div id="gut-patterns"></div>
         </div>
       </div>
 
       <div id="apage-correlations" style="display:none">
-        <div id="corr-grid" class="corr-grid"></div>
         <div id="corr-empty" class="empty" style="display:none"><i class="ti ti-arrows-exchange"></i><p>Log at least 5 days to see correlations.</p></div>
       </div>
 
@@ -667,7 +794,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 
 <script>
 // ─── CONFIG ────────────────────────────────
-const GDRIVE_CLIENT_ID = '882450009885-3d2t1981pcdlqsk8sb13fggk68b709c7.apps.googleusercontent.com';
+882450009885-3d2t1981pcdlqsk8sb13fggk68b709c7.apps.googleusercontent.com
 const GDRIVE_SCOPES = 'https://www.googleapis.com/auth/drive.appdata';
 const STORAGE_KEY = 'vitalog-v3';
 const DRAFT_KEY = 'vitalog-draft-v3';
@@ -751,7 +878,9 @@ function clearLogForm() {
     const tog=document.getElementById('ms-'+m+'-toggle');if(tog)tog.classList.remove('open');
     const body=document.getElementById('ms-'+m+'-body');if(body)body.classList.remove('open');
   });
-  ['drink-notes','body-notes','freeform','care-notes','reading-mins','reading-book','hairoil-type'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  ['drink-notes','gut-notes','body-notes','freeform','care-notes','reading-mins','reading-book','hairoil-type','water-litres'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  const wl=document.getElementById('water-level');if(wl)wl.value='';
+  ['bf-type','lu-type','di-type'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});;
 }
 
 function loadLogForDate(dateStr, isInit) {
@@ -775,6 +904,7 @@ function collectEntry() {
     activities: collectActivities(),
     steps: gv('steps'),
     meals: collectMeals(),
+    water: { litres: gv('water-litres'), level: gv('water-level') },
     drinkNotes: gv('drink-notes'),
     gut: { overall: gv('gut-overall'), notes: gv('gut-notes') },
     mood: { mood: gv('mood'), morningEnergy: scores.energyMorning, eveningEnergy: scores.energyEvening, stress: scores.stress },
@@ -790,11 +920,16 @@ function collectEntry() {
 function scheduleDraftSave() { clearTimeout(draftTimer); draftTimer=setTimeout(saveDraft,800); }
 function saveDraft() {
   if (activeLogDate !== todayStr()) return;
-  try { localStorage.setItem(DRAFT_KEY, JSON.stringify(collectEntry())); } catch(e) {}
+  try {
+    const draft = collectEntry();
+    draft.savedAt = Date.now();
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+  } catch(e) {}
 }
 
 function saveLog(showFeedback=true) {
   const entry = collectEntry();
+  entry.savedAt = Date.now(); // timestamp for merge conflict resolution
   const idx = logs.findIndex(l=>l.date===activeLogDate);
   if(idx>=0) logs[idx]=entry; else logs.unshift(entry);
   logs.sort((a,b)=>b.date.localeCompare(a.date));
@@ -810,9 +945,7 @@ function restoreEntry(d) {
   (d.sleeps||[]).forEach(s=>addSleep(s));
   if(!d.sleeps?.length) addSleep({start:'23:00',end:'06:30',type:'Night sleep'});
   (d.activities||[]).forEach(a=>{
-    addActivity();
-    const last=[...document.querySelectorAll('[id^="act-"]')].filter(x=>x.matches('.subcard')).pop();
-    if(last){const sels=last.querySelectorAll('select');const inps=last.querySelectorAll('input');if(sels[0])sels[0].value=a.type||'';if(inps[0])inps[0].value=a.duration||'';if(sels[1])sels[1].value=a.intensity||'';if(sels[2])sels[2].value=a.muscFocus||'';}
+    addActivity(a);
   });
   if(!d.activities?.length) addActivity();
   if(d.steps){const e=document.getElementById('steps');if(e)e.value=d.steps;}
@@ -833,9 +966,15 @@ function restoreEntry(d) {
       if(last){const inps=last.querySelectorAll('input,select');if(inps[0])inps[0].value=m.what||'';if(inps[1])inps[1].value=m.time||'';if(inps[2])inps[2].value=m.where||'';if(inps[3])inps[3].value=m.after||'';if(inps[4])inps[4].value=m.notes||'';}
     });
   }
-  ['drink-notes','gut-notes','body-notes','freeform','care-notes'].forEach(id=>{
-    const map={'drink-notes':d.drinkNotes,'gut-notes':d.gut?.notes,'body-notes':d.bodyNotes,'freeform':d.notes,'care-notes':d.care?.notes};
+  ['drink-notes','gut-notes','body-notes','freeform','care-notes','water-litres'].forEach(id=>{
+    const map={'drink-notes':d.drinkNotes,'gut-notes':d.gut?.notes,'body-notes':d.bodyNotes,'freeform':d.notes,'care-notes':d.care?.notes,'water-litres':d.water?.litres};
     const e=document.getElementById(id);if(e&&map[id]!=null)e.value=map[id];
+  });
+  if(d.water?.level){const e=document.getElementById('water-level');if(e)e.value=d.water.level;}
+  // Restore meal types
+  [{p:'bf',slot:'breakfast'},{p:'lu',slot:'lunch'},{p:'di',slot:'dinner'}].forEach(({p,slot})=>{
+    const m=(d.meals||[]).find(x=>x.slot===slot);
+    if(m?.type){const e=document.getElementById(p+'-type');if(e)e.value=m.type;}
   });
   if(d.mood?.mood){const e=document.getElementById('mood');if(e)e.value=d.mood.mood;}
   const ss=d._scores||{energyMorning:d.mood?.morningEnergy||0,energyEvening:d.mood?.eveningEnergy||0,stress:d.mood?.stress||0};
@@ -934,12 +1073,12 @@ function collectSleeps() {
   }).filter(s=>s.start||s.end);
 }
 
-function addActivity() {
+function addActivity(defaults) {
   actCount++;
   const id='act-'+actCount;
   const div=document.createElement('div');div.className='subcard';div.id=id;
   div.innerHTML=`<button class="subcard-remove" onclick="document.getElementById('${id}').remove()"><i class="ti ti-x"></i></button>
-    <div class="fields-grid col2" style="margin-bottom:12px">
+    <div class="fields-grid col3" style="margin-bottom:12px">
       <div class="field"><label>Activity</label>
         <select>
           <option value="">—</option>
@@ -950,6 +1089,7 @@ function addActivity() {
           <optgroup label="Other"><option>Rest day</option><option>Other</option></optgroup>
         </select>
       </div>
+      <div class="field"><label>Time</label><input type="time" value="${defaults?.time||''}"></div>
       <div class="field"><label>Muscle focus</label>
         <select>
           <option value="">—</option>
@@ -958,17 +1098,26 @@ function addActivity() {
         </select>
       </div>
     </div>
-    <div class="fields-grid col2">
-      <div class="field"><label>Duration (min)</label><input type="number" min="1" max="300" placeholder="e.g. 45"></div>
+    <div class="fields-grid col3">
+      <div class="field"><label>Duration (min)</label><input type="number" min="1" max="300" placeholder="e.g. 45" value="${defaults?.duration||''}"></div>
       <div class="field"><label>Intensity</label><select><option value="">—</option><option>Light</option><option>Moderate</option><option>Intense</option></select></div>
+      <div class="field"><label>Felt after</label><select><option value="">—</option><option>Energised</option><option>Neutral</option><option>Tired</option></select></div>
     </div>`;
   document.getElementById('activity-blocks').appendChild(div);
+  if(defaults){
+    const sels=div.querySelectorAll('select');
+    if(sels[0]&&defaults.type) sels[0].value=defaults.type;
+    if(sels[1]&&defaults.muscFocus) sels[1].value=defaults.muscFocus;
+    if(sels[2]&&defaults.intensity) sels[2].value=defaults.intensity;
+    if(sels[3]&&defaults.feel) sels[3].value=defaults.feel;
+  }
 }
 
 function collectActivities() {
   return [...document.querySelectorAll('[id^="act-"].subcard')].map(b=>{
-    const sels=b.querySelectorAll('select'),inps=b.querySelectorAll('input');
-    return{type:sels[0]?.value,muscFocus:sels[1]?.value,duration:inps[0]?.value,intensity:sels[2]?.value};
+    const sels=b.querySelectorAll('select');
+    const inps=b.querySelectorAll('input');
+    return{type:sels[0]?.value, time:inps[0]?.value, muscFocus:sels[1]?.value, duration:inps[1]?.value, intensity:sels[2]?.value, feel:sels[3]?.value};
   }).filter(a=>a.type);
 }
 
@@ -1010,12 +1159,12 @@ function collectMeals() {
   slots.forEach(({slot,p})=>{
     const what=document.getElementById(p+'-what')?.value;
     const time=document.getElementById(p+'-time')?.value;
-    if(what||time) meals.push({slot,what:what||'',time:time||'',where:gv(p+'-where'),after:gv(p+'-after'),notes:gv(p+'-notes')});
+    if(what||time) meals.push({slot,what:what||'',time:time||'',where:gv(p+'-where'),type:gv(p+'-type'),after:gv(p+'-after'),notes:gv(p+'-notes')});
   });
   [...document.querySelectorAll('[id^="xm-"].subcard')].forEach(b=>{
     const inps=b.querySelectorAll('input,select');
     const what=inps[0]?.value,time=inps[1]?.value;
-    if(what||time) meals.push({slot:'extra',what:what||'',time:time||'',where:inps[2]?.value||'',after:inps[3]?.value||'',notes:inps[4]?.value||''});
+    if(what||time) meals.push({slot:'extra',what:what||'',time:time||'',where:inps[2]?.value||'',type:inps[3]?.value||'',after:inps[4]?.value||'',notes:inps[5]?.value||''});
   });
   return meals;
 }
@@ -1124,11 +1273,35 @@ function normaliseEntry(l) {
   return e;
 }
 
+let activeHistoryFilter = 'all';
+function filterHistory(filter) {
+  activeHistoryFilter = filter;
+  ['all','good-gut','bad-gut','active','high-stress','yoga'].forEach(f => {
+    const btn = document.getElementById('hf-'+f);
+    if (btn) btn.className = 'pill' + (f === filter ? ' active-good' : '');
+  });
+  renderHistoryList();
+}
+
 function renderHistory() {
-  const el=document.getElementById('history-list');
-  if(!logs.length){el.innerHTML='<div class="empty"><i class="ti ti-calendar-off"></i><p>No logs yet — start with today.</p></div>';renderStats([]);return;}
+  if(!logs.length){
+    document.getElementById('history-list').innerHTML='<div class="empty"><i class="ti ti-calendar-off"></i><p>No logs yet — start with today.</p></div>';
+    renderStats([]);return;
+  }
   renderStats(logs);
-  el.innerHTML=logs.map((raw,idx)=>{
+  renderHistoryList();
+}
+
+function renderHistoryList() {
+  const el = document.getElementById('history-list');
+  let filtered = logs;
+  if (activeHistoryFilter === 'good-gut') filtered = logs.filter(l => l.gut?.overall?.startsWith('Good'));
+  else if (activeHistoryFilter === 'bad-gut') filtered = logs.filter(l => l.gut?.overall && !l.gut.overall.startsWith('Good'));
+  else if (activeHistoryFilter === 'active') filtered = logs.filter(l => (l.activities||[]).some(a => a.type && a.type !== 'Rest day'));
+  else if (activeHistoryFilter === 'high-stress') filtered = logs.filter(l => l.mood?.stress >= 3);
+  else if (activeHistoryFilter === 'yoga') filtered = logs.filter(l => (l.activities||[]).some(a => a.type?.toLowerCase().includes('yoga')));
+  if (!filtered.length) { el.innerHTML = '<div class="empty" style="padding:32px 20px"><i class="ti ti-filter-off"></i><p>No entries match this filter.</p></div>'; return; }
+  el.innerHTML = filtered.map((raw, idx) => {
     const l=normaliseEntry(raw);
     const d=new Date(l.date+'T12:00:00');
     const day=d.getDate(),month=d.toLocaleDateString('en-IN',{month:'short'}),dow=d.toLocaleDateString('en-IN',{weekday:'short'});
@@ -1155,13 +1328,14 @@ function renderHistory() {
     ].filter(Boolean).join('');
     const note=l.notes||l.gut?.notes||'';
     const detail=buildDetail(l);
-    return`<div class="he" onclick="toggleDetail(${idx})">
+    const realIdx = logs.indexOf(raw);
+    return`<div class="he" onclick="toggleDetail(${realIdx})">
       <div class="he-date"><div class="he-day">${day}</div><div class="he-month">${month}</div><div class="he-dow">${dow}</div></div>
       <div class="he-body">
         <div class="he-chips">${chips||'<span class="chip n">No data</span>'}</div>
         ${note?`<div class="he-notes">${note}</div>`:''}
-        <div class="he-expand" id="he-exp-${idx}">▸ Show full detail</div>
-        <div class="he-detail" id="he-det-${idx}">${detail}</div>
+        <div class="he-expand" id="he-exp-${realIdx}">▸ Show full detail</div>
+        <div class="he-detail" id="he-det-${realIdx}">${detail}</div>
       </div>
     </div>`;
   }).join('');
@@ -1208,24 +1382,28 @@ function renderStats(logs) {
   const n=logs.length;
   const withSleep=logs.filter(l=>(l.sleeps||[]).some(s=>s?.start&&s?.end));
   const avgSleep=withSleep.length?(withSleep.map(l=>(l.sleeps||[]).reduce((acc,s)=>{if(!s?.start||!s?.end)return acc;const[sh,sm]=s.start.split(':').map(Number),[eh,em]=s.end.split(':').map(Number);let m=(eh*60+em)-(sh*60+sm);if(m<0)m+=1440;return acc+m},0)).reduce((a,b)=>a+b,0)/withSleep.length/60).toFixed(1):'—';
-  const activeDays=logs.filter(l=>(l.activities||[]).some(a=>a.type&&a.type!=='Rest day')).length;
   const goodGutDays=logs.filter(l=>l.gut?.overall?.startsWith('Good')).length;
   const withEnergy=logs.filter(l=>l.mood?.morningEnergy);
   const avgEnergy=withEnergy.length?(withEnergy.reduce((a,l)=>a+l.mood.morningEnergy,0)/withEnergy.length).toFixed(1):'—';
+  const medDays=logs.filter(l=>l.care?.medicines?.['med-avipattikar-morning']||l.care?.medicines?.['med-avipattikar-evening']).length;
+  const medPct=n?Math.round(medDays/n*100):0;
+  el.style.gridTemplateColumns='repeat(4,1fr)';
   el.innerHTML=`
     <div class="stat-card"><div class="stat-ico" style="background:var(--accent-light);color:var(--accent-text)"><i class="ti ti-calendar-stats"></i></div><div class="stat-lbl">Days logged</div><div class="stat-val">${n}</div><div class="stat-sub">total entries</div></div>
     <div class="stat-card"><div class="stat-ico" style="background:var(--plum-light);color:var(--plum-text)"><i class="ti ti-moon"></i></div><div class="stat-lbl">Avg sleep</div><div class="stat-val">${avgSleep}${avgSleep!=='—'?'h':''}</div><div class="stat-sub">per night</div></div>
-    <div class="stat-card"><div class="stat-ico" style="background:var(--blue-light);color:var(--blue-text)"><i class="ti ti-run"></i></div><div class="stat-lbl">Active days</div><div class="stat-val">${activeDays}</div><div class="stat-sub">of ${n} logged</div></div>
+    <div class="stat-card"><div class="stat-ico" style="background:var(--green-light);color:var(--green-text)"><i class="ti ti-heart-rate-monitor"></i></div><div class="stat-lbl">Good gut days</div><div class="stat-val">${goodGutDays}</div><div class="stat-sub">of ${n} logged</div></div>
     <div class="stat-card"><div class="stat-ico" style="background:var(--gold-light);color:var(--gold-text)"><i class="ti ti-brain"></i></div><div class="stat-lbl">Avg energy</div><div class="stat-val">${avgEnergy}${avgEnergy!=='—'?'/5':''}</div><div class="stat-sub">morning score</div></div>`;
 }
 
 // ─── ANALYSIS ──────────────────────────────
 function switchAnalyseTab(tab) {
-  ['charts','correlations','streaks','weekly','ai'].forEach(t=>{
+  ['charts','activity','gut','correlations','streaks','weekly','ai'].forEach(t=>{
     document.getElementById('apage-'+t).style.display=t===tab?'block':'none';
     document.getElementById('atab-'+t).classList.toggle('active',t===tab);
   });
   if(tab==='charts') renderCharts();
+  if(tab==='activity') renderActivityCalendar();
+  if(tab==='gut') renderGutInsights();
   if(tab==='correlations') renderCorrelations();
   if(tab==='streaks') renderStreaks();
   if(tab==='weekly') renderWeeklySummary();
@@ -1248,26 +1426,315 @@ function renderCharts() {
     const canvas=document.getElementById(id);if(!canvas)return;
     chartInstances[id]=new Chart(canvas,{type,data,options:{...baseOpts(opts.yLbl),plugins:{legend:{display:!!opts.legend,labels:{font:{family:'DM Sans',size:11},color:text3,boxWidth:10}}},...(opts.extra||{})}});
   };
-  // Sleep
-  mkChart('chart-sleep','line',{labels,datasets:[{label:'Hours',data:recent.map(l=>{const sl=l.sleeps||[];const m=sl.reduce((a,s)=>{if(!s?.start||!s?.end)return a;const[sh,sm]=s.start.split(':').map(Number),[eh,em]=s.end.split(':').map(Number);let mn=(eh*60+em)-(sh*60+sm);if(mn<0)mn+=1440;return a+mn},0);return m>0?+(m/60).toFixed(1):null;}),borderColor:plum,backgroundColor:plum+'22',borderWidth:2,pointRadius:3,fill:true,tension:0.3,spanGaps:true}]},plum);
+  // Sleep — with avg reference line
+  const sleepData=recent.map(l=>{const sl=l.sleeps||[];const m=sl.reduce((a,s)=>{if(!s?.start||!s?.end)return a;const[sh,sm]=s.start.split(':').map(Number),[eh,em]=s.end.split(':').map(Number);let mn=(eh*60+em)-(sh*60+sm);if(mn<0)mn+=1440;return a+mn},0);return m>0?+(m/60).toFixed(1):null;});
+  const validSleep=sleepData.filter(Boolean);
+  const avgSleepVal=validSleep.length?+(validSleep.reduce((a,b)=>a+b,0)/validSleep.length).toFixed(1):null;
+  if(avgSleepVal){document.getElementById('sleep-chart-sub').textContent=`Hours per night · avg ${avgSleepVal}h`;}
+  mkChart('chart-sleep','line',{labels,datasets:[
+    {label:'Hours',data:sleepData,borderColor:plum,backgroundColor:plum+'22',borderWidth:2,pointRadius:3,fill:true,tension:0.3,spanGaps:true},
+    avgSleepVal?{label:'30-day avg',data:recent.map(()=>avgSleepVal),borderColor:plum+'66',borderWidth:1.5,borderDash:[5,5],pointRadius:0,fill:false,spanGaps:true}:null
+  ].filter(Boolean)},plum,{legend:false});
   // Energy
   mkChart('chart-energy','line',{labels,datasets:[{label:'Morning',data:recent.map(l=>l.mood?.morningEnergy||null),borderColor:accent,backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:0.3,spanGaps:true},{label:'Evening',data:recent.map(l=>l.mood?.eveningEnergy||null),borderColor:gold,backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:0.3,spanGaps:true}]},accent,{legend:true});
   // Steps
   mkChart('chart-steps','bar',{labels,datasets:[{data:recent.map(l=>l.steps?parseInt(l.steps):null),backgroundColor:accent+'99',borderRadius:3,spanGaps:true}]},accent);
   // Stress
   mkChart('chart-stress','line',{labels,datasets:[{data:recent.map(l=>l.mood?.stress||null),borderColor:red,backgroundColor:red+'18',borderWidth:2,pointRadius:3,fill:true,tension:0.3,spanGaps:true}]},red);
-  // Gut
+  // Gut — with good days count in subtitle
+  const gutGoodCount=recent.filter(l=>l.gut?.overall?.startsWith('Good')).length;
+  const gutTotal=recent.filter(l=>l.gut?.overall).length;
+  if(gutTotal>0){const subEl=document.getElementById('gut-chart-sub');if(subEl)subEl.textContent=`Good on ${gutGoodCount} of ${gutTotal} days`;}
   mkChart('chart-gut','bar',{labels,datasets:[{data:recent.map(l=>{const g=l.gut?.overall||'';return g.startsWith('Good')?3:g.includes('Slight')?2:g?1:null;}),backgroundColor:recent.map(l=>{const g=l.gut?.overall||'';return g.startsWith('Good')?accent+'cc':g.includes('Slight')?gold+'cc':g?red+'cc':text3+'33';}),borderRadius:3}]},accent,{extra:{scales:{y:{ticks:{callback:v=>v===3?'Good':v===2?'Slightly off':v===1?'Bad':'',font:{size:10},color:text3},grid:{color:border}},x:{ticks:{font:{family:'DM Sans',size:10},color:text3,maxRotation:45},grid:{color:border}}}}});
 }
 
 function avg(arr){return arr.length?arr.reduce((a,b)=>a+b,0)/arr.length:0;}
+
+// Activity colour map
+const ACT_COLORS = {
+  'Evolve Yoga': '#16A34A', 'Hatha Yoga': '#15803D',
+  'HRX Workout': '#2563EB', 'Adidas Strength+': '#1D4ED8', 'Bodyweight workout': '#3B82F6', 'Gym / weights': '#1E40AF',
+  'Football': '#EA580C', 'Table tennis': '#DC2626', 'Badminton': '#C2410C', 'Cricket': '#F97316',
+  'Running': '#7C3AED', 'Walking': '#6D28D9', 'Cycling': '#8B5CF6', 'Swimming': '#5B21B6', 'Trekking': '#9333EA',
+  'Rest day': '#9CA3AF', 'Other': '#6B7280'
+};
+
+function getActAbbr(type) {
+  const map = {
+    'Evolve Yoga':'Yoga','Hatha Yoga':'Yoga',
+    'HRX Workout':'HRX','Adidas Strength+':'Str+','Bodyweight workout':'BW','Gym / weights':'Gym',
+    'Football':'Foot','Table tennis':'TT','Badminton':'Badm','Cricket':'Cric',
+    'Running':'Run','Walking':'Walk','Cycling':'Cycle','Swimming':'Swim','Trekking':'Trek',
+    'Rest day':'Rest','Other':'Other'
+  };
+  return map[type] || type.slice(0,4);
+}
+
+let calYear = new Date().getFullYear();
+let calMonth = new Date().getMonth();
+
+function initCalMonthSelect() {
+  const sel = document.getElementById('cal-month-select');
+  if (!sel) return;
+  sel.innerHTML = '';
+  const months = new Set();
+  logs.forEach(l => { if (l.date) months.add(l.date.slice(0,7)); });
+  months.add(new Date().toISOString().slice(0,7));
+  const sorted = [...months].sort().reverse();
+  sorted.forEach(m => {
+    const [y,mo] = m.split('-');
+    const label = new Date(parseInt(y), parseInt(mo)-1, 1).toLocaleDateString('en-IN', {month:'long', year:'numeric'});
+    const opt = document.createElement('option');
+    opt.value = m; opt.textContent = label;
+    if (parseInt(y)===calYear && parseInt(mo)-1===calMonth) opt.selected = true;
+    sel.appendChild(opt);
+  });
+}
+
+function changeCalMonth(dir) {
+  calMonth += dir;
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  if (calMonth < 0) { calMonth = 11; calYear--; }
+  const sel = document.getElementById('cal-month-select');
+  const target = `${calYear}-${String(calMonth+1).padStart(2,'0')}`;
+  if (sel) { const opt = [...sel.options].find(o=>o.value===target); if (opt) opt.selected = true; }
+  renderActivityCalendar();
+}
+
+function renderActivityCalendar() {
+  if (!logs.length) return;
+  const sel = document.getElementById('cal-month-select');
+  if (sel && sel.value) { const [y,m] = sel.value.split('-'); calYear = parseInt(y); calMonth = parseInt(m)-1; }
+  initCalMonthSelect();
+  const now = new Date();
+  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+  const todayDate = now.getDate();
+  const isCurrentMonth = calYear===now.getFullYear() && calMonth===now.getMonth();
+  const monthStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}`;
+  const dows = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const logMap = {};
+  logs.forEach(l => { logMap[l.date] = l; });
+  let stripHtml = '';
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dateStr = `${monthStr}-${String(day).padStart(2,'0')}`;
+    const d = new Date(dateStr + 'T12:00:00');
+    const dow = dows[d.getDay()];
+    const entry = logMap[dateStr];
+    const isToday = isCurrentMonth && day === todayDate;
+    const acts = entry ? (entry.activities||[]).filter(a=>a.type) : [];
+    const displayActs = acts.slice(0,3);
+    let pillsHtml = '';
+    if (displayActs.length) {
+      pillsHtml = displayActs.map(a=>`<div class="act-pill" style="background:${ACT_COLORS[a.type]||'#6B7280'}">${getActAbbr(a.type)}</div>`).join('');
+      if (acts.length > 3) pillsHtml += `<div class="act-pill" style="background:#6B7280">+${acts.length-3}</div>`;
+    } else if (entry) { pillsHtml = `<div class="act-pill empty">—</div>`; }
+    else { pillsHtml = `<div class="act-pill empty" style="opacity:0.3">·</div>`; }
+    stripHtml += `<div class="act-day${isToday?' today':''}"><div class="act-day-label">${dow}</div><div class="act-day-date">${day}</div><div class="act-day-pills">${pillsHtml}</div></div>`;
+  }
+  document.getElementById('act-strip').innerHTML = stripHtml;
+  if (isCurrentMonth) setTimeout(() => { const wrap=document.querySelector('.act-strip-wrap');const days=document.querySelectorAll('.act-day');const todayEl=days[todayDate-1];if(wrap&&todayEl)wrap.scrollLeft=todayEl.offsetLeft-wrap.offsetWidth/2+22; }, 50);
+  const monthActs = new Set();
+  logs.filter(l=>l.date.startsWith(monthStr)).forEach(l=>(l.activities||[]).forEach(a=>{if(a.type)monthActs.add(a.type);}));
+  document.getElementById('act-strip-legend').innerHTML = [...monthActs].map(type=>`<span style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2)"><span style="width:8px;height:8px;border-radius:50%;background:${ACT_COLORS[type]||'#6B7280'};flex-shrink:0"></span>${type}</span>`).join('');
+  const allActCounts = {};
+  logs.forEach(l=>(l.activities||[]).forEach(a=>{ if(a.type) allActCounts[a.type]=(allActCounts[a.type]||0)+1; }));
+  const sortedActs = Object.entries(allActCounts).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('activity-breakdown').innerHTML = sortedActs.map(([type,count])=>`<div class="act-breakdown-card"><div class="act-breakdown-dot" style="background:${ACT_COLORS[type]||'#6B7280'}"></div><div class="act-breakdown-name">${type}</div><div class="act-breakdown-count">${count}</div></div>`).join('');
+}
+function renderGutInsights() {
+  const today = todayStr();
+  const wk = new Date(); wk.setDate(wk.getDate()-7); const wkStr = wk.toISOString().split('T')[0];
+  const pw = new Date(); pw.setDate(pw.getDate()-14); const pwStr = pw.toISOString().split('T')[0];
+  const thisWeek = logs.filter(l=>l.date>=wkStr && l.date<=today);
+  const prevWeek = logs.filter(l=>l.date>=pwStr && l.date<wkStr);
+
+  // Helper: get weeks as arrays of 7-day windows
+  function getWeeks() {
+    if (logs.length < 7) return [];
+    const sorted = [...logs].sort((a,b)=>a.date.localeCompare(b.date));
+    const weeks = [];
+    for (let i=0; i+6<sorted.length; i+=7) weeks.push(sorted.slice(i,i+7));
+    if (weeks.length === 0 && sorted.length >= 4) weeks.push(sorted);
+    return weeks;
+  }
+
+  function weekFactors(wl) {
+    if (!wl.length) return null;
+    const sl = wl.filter(l=>(l.sleeps||[]).some(s=>s?.start&&s?.end));
+    const avgSleep = sl.length ? +(sl.map(l=>(l.sleeps||[]).reduce((a,s)=>{if(!s?.start||!s?.end)return a;const[sh,sm]=s.start.split(':').map(Number),[eh,em]=s.end.split(':').map(Number);let m=(eh*60+em)-(sh*60+sm);if(m<0)m+=1440;return a+m},0)).reduce((a,b)=>a+b,0)/sl.length/60).toFixed(1) : null;
+    const avgStress = avg(wl.map(l=>l.mood?.stress).filter(Boolean));
+    const medDays = wl.filter(l=>l.care?.medicines?.['med-avipattikar-morning']||l.care?.medicines?.['med-avipattikar-evening']).length;
+    const allMeals = wl.flatMap(l=>l.meals||[]).filter(m=>m.what);
+    const cleanMeals = allMeals.filter(m=>['Home-cooked','Canteen'].includes(m.where)).length;
+    const cleanPct = allMeals.length ? Math.round(cleanMeals/allMeals.length*100) : null;
+    const activeDays = wl.filter(l=>(l.activities||[]).some(a=>a.type&&a.type!=='Rest day')).length;
+    const waterDays = wl.filter(l=>l.water?.litres||l.water?.level);
+    const avgWater = waterDays.length ? avg(waterDays.map(l=>parseFloat(l.water?.litres)||({'Low':1,'Medium':2,'High':3}[l.water?.level]||0))) : null;
+    const outdoorDays = wl.filter(l=>l.outdoor).length;
+    const gutGood = wl.filter(l=>l.gut?.overall?.startsWith('Good')).length;
+    const gutTotal = wl.filter(l=>l.gut?.overall).length;
+    return { avgSleep, avgStress:+avgStress.toFixed(1)||null, medDays, medTotal:wl.length, cleanPct, activeDays, total:wl.length, avgWater:avgWater?+avgWater.toFixed(1):null, outdoorDays, gutGood, gutTotal };
+  }
+
+  function factorRow(icon, label, thisVal, prevVal, unit='') {
+    const diff = (thisVal!=null&&prevVal!=null) ? (+(thisVal-prevVal).toFixed(1)) : null;
+    const diffStr = diff!=null ? (diff>0?'▲ +':diff<0?'▼ ':' ')+Math.abs(diff)+unit : '';
+    const diffColor = diff==null?'':diff>0?'color:var(--accent)':diff<0?'color:var(--red)':'color:var(--text3)';
+    return `<div class="gut-factor-row">
+      <div class="gut-factor-icon">${icon}</div>
+      <div class="gut-factor-label">${label}</div>
+      <div class="gut-factor-val">${thisVal!=null?thisVal+unit:'—'}</div>
+      <div class="gut-factor-note" style="${diffColor}">${diffStr||'no prev data'}</div>
+    </div>`;
+  }
+
+  // ── Section 1: Factor scorecard ──
+  const weeks = getWeeks();
+  const goodWeeks = weeks.filter(w=>{ const g=weekFactors(w); return g&&g.gutTotal>=3&&(g.gutGood/g.gutTotal)>=0.6; });
+  const badWeeks = weeks.filter(w=>{ const g=weekFactors(w); return g&&g.gutTotal>=3&&(g.gutGood/g.gutTotal)<=0.3; });
+  const sc = document.getElementById('gut-scorecard-content');
+  if (weeks.length < 4) {
+    sc.innerHTML = `<div class="gut-placeholder"><i class="ti ti-clock"></i>Keep logging — benchmarks will appear after 4 weeks of data.<br>You have ${weeks.length} week${weeks.length!==1?'s':''} of data so far.</div>`;
+  } else {
+    const gf = weekFactors(goodWeeks.flatMap(w=>w));
+    const bf = weekFactors(badWeeks.flatMap(w=>w));
+    const tw = weekFactors(thisWeek);
+    if (!gf && !bf) {
+      sc.innerHTML = `<div class="gut-placeholder"><i class="ti ti-arrows-exchange"></i>Not enough variation in gut data yet to identify patterns. Keep logging.</div>`;
+    } else {
+      sc.innerHTML = `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px;font-size:12px;font-weight:600;color:var(--text3);min-width:0">
+        <div>Factor</div><div style="text-align:right">Best gut weeks</div><div style="text-align:right">Worst gut weeks</div>
+      </div>` + [
+        ['💤','Sleep avg', gf?.avgSleep+'h', bf?.avgSleep+'h'],
+        ['😤','Stress avg', gf?.avgStress+'/5', bf?.avgStress+'/5'],
+        ['🌿','Avipattikar days', gf?gf.medDays+'/'+gf.medTotal:'—', bf?bf.medDays+'/'+bf.medTotal:'—'],
+        ['🥗','Clean meals %', gf?.cleanPct+'%', bf?.cleanPct+'%'],
+        ['🏃','Active days', gf?gf.activeDays+'/7':'—', bf?bf.activeDays+'/7':'—'],
+        ['🌿','Outdoor days', gf?gf.outdoorDays+'/7':'—', bf?bf.outdoorDays+'/7':'—'],
+      ].map(([icon,label,good,bad])=>`<div style="display:grid;grid-template-columns:28px 1fr 1fr 1fr;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);align-items:center">
+        <span style="font-size:16px">${icon}</span>
+        <span style="font-size:13px;color:var(--text2)">${label}</span>
+        <span style="text-align:right;font-size:13px;font-weight:600;color:var(--accent)">${good||'—'}</span>
+        <span style="text-align:right;font-size:13px;font-weight:600;color:var(--red)">${bad||'—'}</span>
+      </div>`).join('') + (tw ? `<div style="margin-top:12px;padding:10px;background:var(--surface2);border-radius:var(--radius);font-size:13px;color:var(--text2)">This week: Sleep ${tw.avgSleep||'—'}h · Stress ${tw.avgStress||'—'}/5 · Medicines ${tw.medDays}/${tw.total} days · Active ${tw.activeDays}/${tw.total} days</div>` : '');
+    }
+  }
+
+  // ── Section 2: Week comparison ──
+  const wc = document.getElementById('gut-week-compare');
+  if (!thisWeek.length && !prevWeek.length) {
+    wc.innerHTML = `<div class="gut-placeholder"><i class="ti ti-calendar"></i>No data for this week yet.</div>`;
+  } else {
+    const renderWeekCol = (wl, title) => {
+      if (!wl.length) return `<div class="week-col"><div class="week-col-title">${title}</div><div style="color:var(--text3);font-size:13px">No data</div></div>`;
+      const f = weekFactors(wl);
+      const rows = [
+        ['💤','Sleep', f.avgSleep?f.avgSleep+'h':'—'],
+        ['😤','Stress avg', f.avgStress?f.avgStress+'/5':'—'],
+        ['🌿','Medicines', f.medDays+'/'+f.total+' days'],
+        ['🥗','Clean meals', f.cleanPct!=null?f.cleanPct+'%':'—'],
+        ['🏃','Active days', f.activeDays+'/'+f.total],
+        ['💧','Water', f.avgWater?f.avgWater+'L avg':'—'],
+        ['🌿','Outdoor', f.outdoorDays+'/'+f.total+' days'],
+      ].map(([icon,label,val])=>`<div style="display:flex;align-items:center;gap:8px;padding:5px 0;font-size:12.5px"><span>${icon}</span><span style="flex:1;color:var(--text2)">${label}</span><span style="font-weight:600;color:var(--text)">${val}</span></div>`).join('');
+      const gutLine = f.gutTotal>0 ? `Gut: ${f.gutGood} good · ${f.gutTotal-f.gutGood} not good of ${f.gutTotal} logged days` : 'Gut: not enough data';
+      return `<div class="week-col"><div class="week-col-title">${title}</div>${rows}<div class="week-col-gut">${gutLine}</div></div>`;
+    };
+    wc.innerHTML = `<div class="week-compare-grid">${renderWeekCol(thisWeek,'This week')}${renderWeekCol(prevWeek,'Last week')}</div>`;
+  }
+
+  // ── Section 3: Activity → next day ──
+  const impact = document.getElementById('gut-activity-impact');
+  const actTypes = [...new Set(logs.flatMap(l=>(l.activities||[]).map(a=>a.type)).filter(Boolean))];
+  const sortedLogs = [...logs].sort((a,b)=>a.date.localeCompare(b.date));
+  const impactData = actTypes.map(type => {
+    const daysWithAct = sortedLogs.filter(l=>(l.activities||[]).some(a=>a.type===type));
+    const nextDays = daysWithAct.map(l=>{
+      const idx = sortedLogs.findIndex(x=>x.date===l.date);
+      return idx>=0&&idx<sortedLogs.length-1 ? sortedLogs[idx+1] : null;
+    }).filter(Boolean);
+    if (nextDays.length < 2) return null;
+    const avgEnergy = avg(nextDays.map(l=>l.mood?.morningEnergy).filter(Boolean));
+    const avgStressNext = avg(nextDays.map(l=>l.mood?.stress).filter(Boolean));
+    const gutGoodPct = nextDays.filter(l=>l.gut?.overall?.startsWith('Good')).length / nextDays.filter(l=>l.gut?.overall).length * 100;
+    return { type, n: nextDays.length, avgEnergy:+avgEnergy.toFixed(1)||null, avgStress:+avgStressNext.toFixed(1)||null, gutGoodPct:isNaN(gutGoodPct)?null:Math.round(gutGoodPct) };
+  }).filter(Boolean);
+
+  if (!impactData.length) {
+    impact.innerHTML = `<div class="gut-placeholder"><i class="ti ti-clock"></i>Need more data to show next-day patterns. Keep logging activities.</div>`;
+  } else {
+    impact.innerHTML = impactData.map(d=>`<div class="impact-row">
+      <div class="impact-act"><span style="width:10px;height:10px;border-radius:50%;background:${ACT_COLORS[d.type]||'#6B7280'};flex-shrink:0;display:inline-block"></span>${d.type}</div>
+      <div class="impact-metrics">
+        ${d.avgEnergy?`<div class="impact-metric">Next morning energy: <strong>${d.avgEnergy}/5</strong></div>`:''}
+        ${d.avgStress?`<div class="impact-metric">Next day stress: <strong>${d.avgStress}/5</strong></div>`:''}
+        ${d.gutGoodPct!=null?`<div class="impact-metric">Good gut next day: <strong>${d.gutGoodPct}%</strong></div>`:''}
+      </div>
+      <div class="impact-n">${d.n} session${d.n!==1?'s':''}</div>
+    </div>`).join('');
+  }
+
+  // ── Section 4: Rolling 7-day window ──
+  const rolling = document.getElementById('gut-rolling');
+  if (logs.length < 10) {
+    rolling.innerHTML = `<div class="gut-placeholder"><i class="ti ti-clock"></i>Need at least 10 days of data. You have ${logs.length} so far.</div>`;
+  } else {
+    const highActive = weeks.filter(w=>weekFactors(w)?.activeDays>=4);
+    const lowActive = weeks.filter(w=>weekFactors(w)?.activeDays<=2);
+    const haGut = highActive.length ? avg(highActive.map(w=>{ const f=weekFactors(w); return f.gutTotal?f.gutGood/f.gutTotal*100:null; }).filter(v=>v!=null)) : null;
+    const laGut = lowActive.length ? avg(lowActive.map(w=>{ const f=weekFactors(w); return f.gutTotal?f.gutGood/f.gutTotal*100:null; }).filter(v=>v!=null)) : null;
+    if (haGut==null&&laGut==null) {
+      rolling.innerHTML = `<div class="gut-placeholder"><i class="ti ti-clock"></i>Keep logging — rolling patterns will appear soon.</div>`;
+    } else {
+      rolling.innerHTML = `<div style="display:flex;gap:16px;flex-wrap:wrap">
+        ${haGut!=null?`<div style="flex:1;min-width:140px;background:var(--accent-light);border-radius:var(--radius);padding:16px;text-align:center"><div style="font-family:var(--font-display);font-size:28px;color:var(--accent)">${Math.round(haGut)}%</div><div style="font-size:12px;color:var(--accent-text);margin-top:4px">Good gut days<br>on active weeks (4+ days)</div></div>`:''}
+        ${laGut!=null?`<div style="flex:1;min-width:140px;background:var(--red-light);border-radius:var(--radius);padding:16px;text-align:center"><div style="font-family:var(--font-display);font-size:28px;color:var(--red)">${Math.round(laGut)}%</div><div style="font-size:12px;color:var(--red-text);margin-top:4px">Good gut days<br>on less active weeks (≤2 days)</div></div>`:''}
+      </div>`;
+    }
+  }
+
+  // ── Section 5: Pattern finder ──
+  const pf = document.getElementById('gut-patterns');
+  if (weeks.length < 4) {
+    pf.innerHTML = `<div class="gut-placeholder"><i class="ti ti-clock"></i>Pattern finder needs 4+ weeks of data. You have ${weeks.length} so far.</div>`;
+  } else if (!goodWeeks.length && !badWeeks.length) {
+    pf.innerHTML = `<div class="gut-placeholder"><i class="ti ti-arrows-exchange"></i>Not enough gut variation yet to identify patterns. Keep logging.</div>`;
+  } else {
+    const describeWeek = (wl, label, colorClass) => {
+      const f = weekFactors(wl.flatMap(w=>w));
+      if (!f) return '';
+      const factors = [
+        f.avgSleep ? `Sleep ${f.avgSleep}h avg` : null,
+        f.avgStress ? `Stress ${f.avgStress}/5 avg` : null,
+        f.medDays ? `Medicines ${f.medDays}/${f.medTotal} days` : null,
+        f.cleanPct!=null ? `Clean meals ${f.cleanPct}%` : null,
+        `Active ${f.activeDays} days/week avg`,
+        f.outdoorDays ? `Outdoor ${f.outdoorDays} days/week avg` : null,
+      ].filter(Boolean);
+      return `<div class="pattern-card">
+        <div class="pattern-title" style="color:var(--${colorClass}-text)">${label} (${wl.length} week${wl.length!==1?'s':''})</div>
+        <div class="pattern-factors">${factors.map(f=>`<span class="pattern-factor">${f}</span>`).join('')}</div>
+      </div>`;
+    };
+    pf.innerHTML = describeWeek(goodWeeks,'Best gut weeks','accent') + describeWeek(badWeeks,'Worst gut weeks','red');
+  }
+}
+
 
 function renderCorrelations() {
   const grid=document.getElementById('corr-grid'),empty=document.getElementById('corr-empty');
   if(logs.length<5){grid.style.display='none';empty.style.display='block';return;}
   grid.style.display='grid';empty.style.display='none';
   const cards=[];
-  const yogaDays=logs.filter(l=>(l.activities||[]).some(a=>a.type?.toLowerCase().includes('yoga')));
+  // Avipattikar vs gut — first card as it's the most important pattern
+  const medKeys=['med-avipattikar-morning','med-avipattikar-evening'];
+  const medDays=logs.filter(l=>medKeys.some(k=>l.care?.medicines?.[k]));
+  const noMedDays=logs.filter(l=>!medKeys.some(k=>l.care?.medicines?.[k])&&l.gut?.overall);
+  if(medDays.length>=2){
+    const pct=Math.round(medDays.filter(l=>l.gut?.overall?.startsWith('Good')).length/medDays.length*100);
+    const noMedPct=noMedDays.length?Math.round(noMedDays.filter(l=>l.gut?.overall?.startsWith('Good')).length/noMedDays.length*100):null;
+    cards.push({icon:'🌿',stat:pct+'%',lbl:'Good gut days when Avipattikar was taken'+(noMedPct!==null?' vs '+noMedPct+'% when not taken':''),note:`${medDays.length} days with Avipattikar`,color:pct>=60?'var(--accent)':'var(--gold)'});
+  }
   const noYoga=logs.filter(l=>!(l.activities||[]).some(a=>a.type?.toLowerCase().includes('yoga'))&&(l.activities||[]).some(a=>a.type));
   if(yogaDays.length>=2&&noYoga.length>=2){const d=+(avg(yogaDays.map(l=>l.mood?.eveningEnergy).filter(Boolean))-avg(noYoga.map(l=>l.mood?.eveningEnergy).filter(Boolean))).toFixed(1);if(!isNaN(d))cards.push({icon:'🧘',stat:(d>=0?'+':'')+d,lbl:'Evening energy on yoga days vs non-yoga days',note:`${yogaDays.length} yoga days`,color:d>=0?'var(--accent)':'var(--red)'});}
   const workDays=logs.filter(l=>(l.activities||[]).some(a=>['HRX Workout','Adidas Strength+','Bodyweight workout','Gym / weights'].includes(a.type)));
@@ -1277,9 +1744,6 @@ function renderCorrelations() {
   const readDays=logs.filter(l=>l.reading?.did==='yes'&&l.mood?.stress);
   const noReadDays=logs.filter(l=>l.reading?.did==='no'&&l.mood?.stress);
   if(readDays.length>=2&&noReadDays.length>=2){const d=+(avg(readDays.map(l=>l.mood.stress))-avg(noReadDays.map(l=>l.mood.stress))).toFixed(1);cards.push({icon:'📖',stat:(d<=0?'':'+')+(d*-1).toFixed(1),lbl:'Stress difference on days you read vs didn\'t',note:`${readDays.length} reading days`,color:d<=0?'var(--accent)':'var(--red)'});}
-  const medKeys=['med-avipattikar-morning','med-avipattikar-evening'];
-  const medDays=logs.filter(l=>medKeys.some(k=>l.care?.medicines?.[k]));
-  if(medDays.length>=2){const pct=Math.round(medDays.filter(l=>l.gut?.overall?.startsWith('Good')).length/medDays.length*100);cards.push({icon:'🌿',stat:pct+'%',lbl:'Good gut days when Avipattikar was taken',note:`${medDays.length} days`,color:pct>=60?'var(--accent)':'var(--gold)'});}
   const outdoorDays=logs.filter(l=>l.outdoor&&l.mood?.morningEnergy);
   const noOutdoor=logs.filter(l=>!l.outdoor&&l.mood?.morningEnergy);
   if(outdoorDays.length>=2&&noOutdoor.length>=2){const d=+(avg(outdoorDays.map(l=>l.mood.morningEnergy))-avg(noOutdoor.map(l=>l.mood.morningEnergy))).toFixed(1);if(!isNaN(d))cards.push({icon:'🌿',stat:(d>=0?'+':'')+d,lbl:'Morning energy on outdoor days vs indoor days',note:`${outdoorDays.length} outdoor days`,color:d>=0?'var(--accent)':'var(--red)'});}
@@ -1417,10 +1881,24 @@ async function gdriveLoadFromDrive() {
       const fr=await fetch(`https://www.googleapis.com/drive/v3/files/${gdriveFileId}?alt=media`,{headers:{Authorization:'Bearer '+gdriveToken}});
       const driveData=await fr.json();
       if(Array.isArray(driveData)&&driveData.length){
-        const merged=[...logs];driveData.forEach(e=>{const i=merged.findIndex(l=>l.date===e.date);if(i>=0)merged[i]=e;else merged.push(e);});
-        merged.sort((a,b)=>b.date.localeCompare(a.date));logs=merged;
+        const merged=[...logs];
+        driveData.forEach(driveEntry=>{
+          const idx=merged.findIndex(l=>l.date===driveEntry.date);
+          if(idx>=0){
+            // Keep whichever entry was saved more recently
+            const localSavedAt=merged[idx].savedAt||0;
+            const driveSavedAt=driveEntry.savedAt||0;
+            if(driveSavedAt>localSavedAt) merged[idx]=driveEntry;
+            // else keep local — it's newer
+          } else {
+            merged.push(driveEntry);
+          }
+        });
+        merged.sort((a,b)=>b.date.localeCompare(a.date));
+        logs=merged;
         localStorage.setItem(STORAGE_KEY,JSON.stringify(logs));
-        loadLogForDate(todayStr(),false);showToast('Synced from Drive ✓');
+        loadLogForDate(todayStr(),false);
+        showToast('Synced from Drive ✓');
       }
     }
     gdriveUpdateUI('connected');
