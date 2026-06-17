@@ -263,7 +263,24 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 /* Activity breakdown grid */
 .act-breakdown-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 
-/* ── GUT INSIGHTS ────────────────────────── */
+/* ── SLEEP TAB ───────────────────────────── */
+.sleep-compare-row{display:flex;gap:12px;margin-bottom:8px}
+.sleep-compare-col{flex:1;background:var(--surface2);border-radius:var(--radius);padding:12px;text-align:center}
+.sleep-compare-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px}
+.sleep-compare-val{font-family:var(--font-display);font-size:22px;color:var(--text)}
+.sleep-compare-sub{font-size:11.5px;color:var(--text3);margin-top:2px}
+.sleep-debt-bar{height:12px;border-radius:99px;background:var(--surface3);overflow:hidden;margin:6px 0}
+.sleep-debt-fill{height:100%;border-radius:99px;transition:width 0.4s}
+.sleep-energy-table{width:100%;border-collapse:collapse}
+.sleep-energy-table th{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;padding:6px 8px;text-align:left;border-bottom:1px solid var(--border)}
+.sleep-energy-table td{font-size:13px;color:var(--text2);padding:8px;border-bottom:1px solid var(--border)}
+.sleep-energy-table td:last-child{font-weight:600;color:var(--text);text-align:right}
+.sleep-energy-table tr:last-child td{border-bottom:none}
+.consistency-week{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+.consistency-week:last-child{border-bottom:none}
+.consistency-label{color:var(--text2);flex:1}
+.consistency-val{font-weight:600;color:var(--text)}
+.consistency-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 .gut-factor-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
 .gut-factor-row:last-child{border-bottom:none}
 .gut-factor-icon{font-size:18px;width:28px;flex-shrink:0;text-align:center}
@@ -351,6 +368,10 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
   /* Activity strip mobile */
   .act-day{min-width:38px}
   .act-pill{font-size:9px;padding:2px 5px}
+  /* Sleep tab mobile */
+  #sleep-summary-row{grid-template-columns:1fr 1fr !important}
+  .sleep-compare-row{gap:8px}
+  .chart-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -654,6 +675,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
     <div id="page-analyse" style="display:none">
       <div class="analyse-tabs">
         <button class="atab active" id="atab-charts" onclick="switchAnalyseTab('charts')"><i class="ti ti-chart-line"></i> Charts</button>
+        <button class="atab" id="atab-sleep" onclick="switchAnalyseTab('sleep')"><i class="ti ti-moon-stars"></i> Sleep</button>
         <button class="atab" id="atab-activity" onclick="switchAnalyseTab('activity')"><i class="ti ti-calendar-month"></i> Activity</button>
         <button class="atab" id="atab-gut" onclick="switchAnalyseTab('gut')"><i class="ti ti-heart-rate-monitor"></i> Gut insights</button>
         <button class="atab" id="atab-correlations" onclick="switchAnalyseTab('correlations')"><i class="ti ti-arrows-exchange"></i> Correlations</button>
@@ -664,11 +686,72 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 
       <div id="apage-charts">
         <div class="chart-grid">
-          <div class="chart-card"><div class="chart-title">Sleep duration</div><div class="chart-sub" id="sleep-chart-sub">Hours per night</div><div class="chart-wrap"><canvas id="chart-sleep"></canvas></div></div>
           <div class="chart-card"><div class="chart-title">Energy levels</div><div class="chart-sub">Morning vs evening (1–5)</div><div class="chart-wrap"><canvas id="chart-energy"></canvas></div></div>
           <div class="chart-card"><div class="chart-title">Steps</div><div class="chart-sub">Daily step count</div><div class="chart-wrap"><canvas id="chart-steps"></canvas></div></div>
           <div class="chart-card"><div class="chart-title">Stress</div><div class="chart-sub">Stress level (1–5)</div><div class="chart-wrap"><canvas id="chart-stress"></canvas></div></div>
           <div class="chart-card" style="grid-column:1/-1"><div class="chart-title">Gut health</div><div class="chart-sub" id="gut-chart-sub">Daily rating</div><div class="chart-wrap"><canvas id="chart-gut"></canvas></div></div>
+        </div>
+      </div>
+
+      <!-- Sleep tab -->
+      <div id="apage-sleep" style="display:none">
+        <!-- Summary row -->
+        <div id="sleep-summary-row" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px"></div>
+
+        <!-- Duration chart -->
+        <div class="chart-grid" style="margin-bottom:16px">
+          <div class="chart-card"><div class="chart-title">Sleep duration</div><div class="chart-sub" id="sleep-chart-sub">Hours per night</div><div class="chart-wrap"><canvas id="chart-sleep"></canvas></div></div>
+
+          <!-- Bedtime chart -->
+          <div class="chart-card">
+            <div class="chart-title">Bedtime</div>
+            <div class="chart-sub">When you fell asleep · green before 11pm, amber 11–12, red after 12</div>
+            <div class="chart-wrap"><canvas id="chart-bedtime"></canvas></div>
+          </div>
+
+          <!-- Wake-up chart -->
+          <div class="chart-card">
+            <div class="chart-title">Wake-up time</div>
+            <div class="chart-sub">When you woke up · green before 7am, amber 7–8, red after 8</div>
+            <div class="chart-wrap"><canvas id="chart-wakeup"></canvas></div>
+          </div>
+
+          <!-- Quality chart -->
+          <div class="chart-card">
+            <div class="chart-title">Sleep quality</div>
+            <div class="chart-sub">Deep / Okay / Broken breakdown</div>
+            <div class="chart-wrap"><canvas id="chart-sleep-quality"></canvas></div>
+          </div>
+        </div>
+
+        <!-- Insights row -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+          <!-- Weekday vs weekend -->
+          <div class="chart-card">
+            <div class="chart-title" style="margin-bottom:4px">Weekday vs weekend</div>
+            <div class="chart-sub" style="margin-bottom:14px">Average bedtime and wake-up comparison</div>
+            <div id="sleep-weekday-compare"></div>
+          </div>
+          <!-- Consistency -->
+          <div class="chart-card">
+            <div class="chart-title" style="margin-bottom:4px">Sleep consistency</div>
+            <div class="chart-sub" style="margin-bottom:14px">How much your bedtime varies week to week</div>
+            <div id="sleep-consistency"></div>
+          </div>
+        </div>
+
+        <!-- Sleep debt -->
+        <div class="chart-card" style="margin-bottom:16px">
+          <div class="chart-title" style="margin-bottom:4px">Sleep debt tracker</div>
+          <div class="chart-sub" style="margin-bottom:14px">Cumulative shortfall vs your 30-day average sleep duration</div>
+          <div id="sleep-debt"></div>
+        </div>
+
+        <!-- Energy after sleep duration -->
+        <div class="chart-card">
+          <div class="chart-title" style="margin-bottom:4px">Your energy response to sleep duration</div>
+          <div class="chart-sub" style="margin-bottom:14px">Average morning energy after different amounts of sleep</div>
+          <div id="sleep-energy-response"></div>
         </div>
       </div>
 
@@ -1397,17 +1480,278 @@ function renderStats(logs) {
 
 // ─── ANALYSIS ──────────────────────────────
 function switchAnalyseTab(tab) {
-  ['charts','activity','gut','correlations','streaks','weekly','ai'].forEach(t=>{
+  ['charts','sleep','activity','gut','correlations','streaks','weekly','ai'].forEach(t=>{
     document.getElementById('apage-'+t).style.display=t===tab?'block':'none';
     document.getElementById('atab-'+t).classList.toggle('active',t===tab);
   });
   if(tab==='charts') renderCharts();
+  if(tab==='sleep') renderSleepTab();
   if(tab==='activity') renderActivityCalendar();
   if(tab==='gut') renderGutInsights();
   if(tab==='correlations') renderCorrelations();
   if(tab==='streaks') renderStreaks();
   if(tab==='weekly') renderWeeklySummary();
 }
+
+function timeToMins(t) {
+  if (!t) return null;
+  const [h,m] = t.split(':').map(Number);
+  return h * 60 + m;
+}
+
+function minsToTime(mins) {
+  if (mins == null) return '—';
+  const h = Math.floor(mins / 60) % 24;
+  const m = mins % 60;
+  const ampm = h >= 12 ? 'pm' : 'am';
+  const h12 = h % 12 || 12;
+  return `${h12}:${String(m).padStart(2,'0')}${ampm}`;
+}
+
+function getSleepTimes(l) {
+  const sl = (l.sleeps || []).find(s => s.type === 'Night sleep' && s.start && s.end);
+  if (!sl) return null;
+  let sleepMins = timeToMins(sl.start);
+  let wakeMins = timeToMins(sl.end);
+  // Normalise sleep time — times before 6pm treated as next day (e.g. 23:00 = 23h, 01:00 = 25h)
+  if (sleepMins < 360) sleepMins += 1440; // before 6am = next day
+  let durMins = wakeMins - sleepMins;
+  if (durMins < 0) durMins += 1440;
+  return { sleepMins, wakeMins, durMins, quality: sl.quality };
+}
+
+function renderSleepTab() {
+  if (!logs.length) return;
+  const style = getComputedStyle(document.documentElement);
+  const accent = style.getPropertyValue('--accent').trim() || '#2D6A4F';
+  const plum = style.getPropertyValue('--plum').trim() || '#5C3D7A';
+  const gold = style.getPropertyValue('--gold').trim() || '#8B6914';
+  const red = style.getPropertyValue('--red').trim() || '#8B2E2E';
+  const text3 = style.getPropertyValue('--text3').trim() || '#9a9a94';
+  const border = style.getPropertyValue('--border').trim() || 'rgba(0,0,0,0.09)';
+
+  const recent = [...logs].reverse().slice(-30);
+  const labels = recent.map(l => { const d = new Date(l.date+'T12:00:00'); return d.toLocaleDateString('en-IN',{day:'numeric',month:'short'}); });
+
+  // Collect sleep data
+  const sleepData = recent.map(l => getSleepTimes(l));
+
+  // ── Summary row ──
+  const validSleep = sleepData.filter(Boolean);
+  const avgDur = validSleep.length ? avg(validSleep.map(s=>s.durMins/60)) : null;
+  const avgBed = validSleep.length ? avg(validSleep.map(s=>s.sleepMins)) : null;
+  const avgWake = validSleep.length ? avg(validSleep.map(s=>s.wakeMins)) : null;
+  const qualityCounts = { 'Deep / refreshed': 0, 'Okay, slightly groggy': 0, 'Broken / unrefreshed': 0 };
+  validSleep.forEach(s => { if (s.quality && qualityCounts[s.quality] !== undefined) qualityCounts[s.quality]++; });
+  const deepPct = validSleep.length ? Math.round(qualityCounts['Deep / refreshed'] / validSleep.length * 100) : null;
+
+  document.getElementById('sleep-summary-row').innerHTML = `
+    <div class="stat-card"><div class="stat-ico" style="background:var(--plum-light);color:var(--plum-text)"><i class="ti ti-moon"></i></div><div class="stat-lbl">Avg duration</div><div class="stat-val">${avgDur ? avgDur.toFixed(1)+'h' : '—'}</div><div class="stat-sub">per night</div></div>
+    <div class="stat-card"><div class="stat-ico" style="background:var(--blue-light);color:var(--blue-text)"><i class="ti ti-bed"></i></div><div class="stat-lbl">Avg bedtime</div><div class="stat-val" style="font-size:20px">${avgBed ? minsToTime(Math.round(avgBed)) : '—'}</div><div class="stat-sub">last 30 days</div></div>
+    <div class="stat-card"><div class="stat-ico" style="background:var(--gold-light);color:var(--gold-text)"><i class="ti ti-sunrise"></i></div><div class="stat-lbl">Avg wake-up</div><div class="stat-val" style="font-size:20px">${avgWake ? minsToTime(Math.round(avgWake)) : '—'}</div><div class="stat-sub">last 30 days</div></div>
+    <div class="stat-card"><div class="stat-ico" style="background:var(--green-light);color:var(--green-text)"><i class="ti ti-star"></i></div><div class="stat-lbl">Deep sleep</div><div class="stat-val">${deepPct !== null ? deepPct+'%' : '—'}</div><div class="stat-sub">of nights logged</div></div>`;
+
+  // ── Duration chart ──
+  const avgSleepVal = avgDur ? +avgDur.toFixed(1) : null;
+  if (avgSleepVal) document.getElementById('sleep-chart-sub').textContent = `Hours per night · avg ${avgSleepVal}h`;
+  if (chartInstances['chart-sleep']) chartInstances['chart-sleep'].destroy();
+  const sleepCanvas = document.getElementById('chart-sleep');
+  if (sleepCanvas) {
+    chartInstances['chart-sleep'] = new Chart(sleepCanvas, {
+      type: 'line',
+      data: { labels, datasets: [
+        { label: 'Hours', data: sleepData.map(s=>s?+(s.durMins/60).toFixed(1):null), borderColor: plum, backgroundColor: plum+'22', borderWidth: 2, pointRadius: 3, fill: true, tension: 0.3, spanGaps: true },
+        avgSleepVal ? { label: 'Avg', data: recent.map(()=>avgSleepVal), borderColor: plum+'55', borderWidth: 1.5, borderDash: [5,5], pointRadius: 0, fill: false, spanGaps: true } : null
+      ].filter(Boolean) },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: { font: { family: 'DM Sans', size: 10 }, color: text3, maxRotation: 45 }, grid: { color: border } }, y: { ticks: { font: { family: 'DM Sans', size: 10 }, color: text3 }, grid: { color: border } } } }
+    });
+  }
+
+  // ── Bedtime chart ──
+  // Convert sleep time to hours for chart (e.g. 23h = 23, 25h = 1am next day shown as 25)
+  const bedtimeData = sleepData.map(s => s ? +(s.sleepMins / 60).toFixed(2) : null);
+  const bedColors = sleepData.map(s => {
+    if (!s) return text3+'33';
+    const h = s.sleepMins / 60;
+    if (h < 23) return accent+'cc'; // before 11pm green
+    if (h < 24) return gold+'cc';   // 11-12 amber
+    return red+'cc';                 // after 12 red
+  });
+  if (chartInstances['chart-bedtime']) chartInstances['chart-bedtime'].destroy();
+  const bedCanvas = document.getElementById('chart-bedtime');
+  if (bedCanvas) {
+    chartInstances['chart-bedtime'] = new Chart(bedCanvas, {
+      type: 'bar',
+      data: { labels, datasets: [{ data: bedtimeData, backgroundColor: bedColors, borderRadius: 3 }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+        scales: { x: { ticks: { font: { family: 'DM Sans', size: 10 }, color: text3, maxRotation: 45 }, grid: { color: border } },
+          y: { min: 21, max: 27, ticks: { callback: v => { const h = v % 24; const ampm = v >= 24 ? 'am' : 'pm'; return (h||12)+ampm; }, font: { family: 'DM Sans', size: 10 }, color: text3 }, grid: { color: border } } } }
+    });
+  }
+
+  // ── Wake-up chart ──
+  const wakeData = sleepData.map(s => s ? +(s.wakeMins / 60).toFixed(2) : null);
+  const wakeColors = sleepData.map(s => {
+    if (!s) return text3+'33';
+    const h = s.wakeMins / 60;
+    if (h < 7) return accent+'cc';   // before 7am green
+    if (h < 8) return gold+'cc';     // 7-8 amber
+    return red+'cc';                  // after 8 red
+  });
+  if (chartInstances['chart-wakeup']) chartInstances['chart-wakeup'].destroy();
+  const wakeCanvas = document.getElementById('chart-wakeup');
+  if (wakeCanvas) {
+    chartInstances['chart-wakeup'] = new Chart(wakeCanvas, {
+      type: 'bar',
+      data: { labels, datasets: [{ data: wakeData, backgroundColor: wakeColors, borderRadius: 3 }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+        scales: { x: { ticks: { font: { family: 'DM Sans', size: 10 }, color: text3, maxRotation: 45 }, grid: { color: border } },
+          y: { min: 4, max: 11, ticks: { callback: v => v+'am', font: { family: 'DM Sans', size: 10 }, color: text3 }, grid: { color: border } } } }
+    });
+  }
+
+  // ── Quality chart ──
+  if (chartInstances['chart-sleep-quality']) chartInstances['chart-sleep-quality'].destroy();
+  const qualCanvas = document.getElementById('chart-sleep-quality');
+  if (qualCanvas && validSleep.length) {
+    const qLabels = ['Deep', 'Okay', 'Broken'];
+    const qData = [qualityCounts['Deep / refreshed'], qualityCounts['Okay, slightly groggy'], qualityCounts['Broken / unrefreshed']];
+    const qColors = [accent+'cc', gold+'cc', red+'cc'];
+    chartInstances['chart-sleep-quality'] = new Chart(qualCanvas, {
+      type: 'doughnut',
+      data: { labels: qLabels, datasets: [{ data: qData, backgroundColor: qColors, borderWidth: 0 }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true, position: 'bottom', labels: { font: { family: 'DM Sans', size: 11 }, color: text3, boxWidth: 12, padding: 12 } } } }
+    });
+  }
+
+  // ── Weekday vs weekend ──
+  const weekdayLogs = logs.filter(l => { const d = new Date(l.date+'T12:00:00'); return d.getDay() >= 1 && d.getDay() <= 5; });
+  const weekendLogs = logs.filter(l => { const d = new Date(l.date+'T12:00:00'); return d.getDay() === 0 || d.getDay() === 6; });
+  const wdSleeps = weekdayLogs.map(l => getSleepTimes(l)).filter(Boolean);
+  const weSleeps = weekendLogs.map(l => getSleepTimes(l)).filter(Boolean);
+  const wdAvgBed = wdSleeps.length ? avg(wdSleeps.map(s=>s.sleepMins)) : null;
+  const wdAvgWake = wdSleeps.length ? avg(wdSleeps.map(s=>s.wakeMins)) : null;
+  const wdAvgDur = wdSleeps.length ? avg(wdSleeps.map(s=>s.durMins/60)) : null;
+  const weAvgBed = weSleeps.length ? avg(weSleeps.map(s=>s.sleepMins)) : null;
+  const weAvgWake = weSleeps.length ? avg(weSleeps.map(s=>s.wakeMins)) : null;
+  const weAvgDur = weSleeps.length ? avg(weSleeps.map(s=>s.durMins/60)) : null;
+  const wkEl = document.getElementById('sleep-weekday-compare');
+  if (!wdSleeps.length && !weSleeps.length) {
+    wkEl.innerHTML = `<div class="gut-placeholder"><i class="ti ti-clock"></i>Not enough data yet.</div>`;
+  } else {
+    wkEl.innerHTML = `<div class="sleep-compare-row">
+      <div class="sleep-compare-col"><div class="sleep-compare-label">Weekdays</div><div class="sleep-compare-val">${wdAvgBed?minsToTime(Math.round(wdAvgBed)):'—'}</div><div class="sleep-compare-sub">avg bedtime</div></div>
+      <div class="sleep-compare-col"><div class="sleep-compare-label">Weekends</div><div class="sleep-compare-val">${weAvgBed?minsToTime(Math.round(weAvgBed)):'—'}</div><div class="sleep-compare-sub">avg bedtime</div></div>
+    </div>
+    <div class="sleep-compare-row">
+      <div class="sleep-compare-col"><div class="sleep-compare-val" style="font-size:18px">${wdAvgWake?minsToTime(Math.round(wdAvgWake)):'—'}</div><div class="sleep-compare-sub">avg wake-up</div></div>
+      <div class="sleep-compare-col"><div class="sleep-compare-val" style="font-size:18px">${weAvgWake?minsToTime(Math.round(weAvgWake)):'—'}</div><div class="sleep-compare-sub">avg wake-up</div></div>
+    </div>
+    <div class="sleep-compare-row">
+      <div class="sleep-compare-col"><div class="sleep-compare-val" style="font-size:18px">${wdAvgDur?wdAvgDur.toFixed(1)+'h':'—'}</div><div class="sleep-compare-sub">avg duration</div></div>
+      <div class="sleep-compare-col"><div class="sleep-compare-val" style="font-size:18px">${weAvgDur?weAvgDur.toFixed(1)+'h':'—'}</div><div class="sleep-compare-sub">avg duration</div></div>
+    </div>`;
+  }
+
+  // ── Consistency ──
+  // Group logs into weeks and compute bedtime std dev per week
+  const sortedLogs = [...logs].sort((a,b)=>a.date.localeCompare(b.date));
+  const weeks = [];
+  for (let i=0; i+6<sortedLogs.length; i+=7) weeks.push(sortedLogs.slice(i,i+7));
+  const consEl = document.getElementById('sleep-consistency');
+  if (weeks.length < 2) {
+    consEl.innerHTML = `<div class="gut-placeholder"><i class="ti ti-clock"></i>Need 2+ weeks of data.</div>`;
+  } else {
+    const weekConsistency = weeks.map(wl => {
+      const times = wl.map(l=>getSleepTimes(l)).filter(Boolean).map(s=>s.sleepMins);
+      if (times.length < 3) return null;
+      const mean = avg(times);
+      const variance = avg(times.map(t=>(t-mean)**2));
+      const stdDev = Math.sqrt(variance);
+      return { label: wl[0].date.slice(5) + ' – ' + wl[wl.length-1].date.slice(5), stdDev: +stdDev.toFixed(0) };
+    }).filter(Boolean);
+    consEl.innerHTML = weekConsistency.map(w => {
+      const color = w.stdDev < 30 ? accent : w.stdDev < 60 ? gold : red;
+      const label = w.stdDev < 30 ? 'Consistent' : w.stdDev < 60 ? 'Moderate variation' : 'High variation';
+      return `<div class="consistency-week">
+        <div class="consistency-dot" style="background:${color}"></div>
+        <div class="consistency-label">${w.label}</div>
+        <div class="consistency-val" style="color:${color}">${label}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // ── Sleep debt ──
+  const debtEl = document.getElementById('sleep-debt');
+  if (!avgDur || validSleep.length < 7) {
+    debtEl.innerHTML = `<div class="gut-placeholder"><i class="ti ti-clock"></i>Need 7+ nights of data to calculate debt.</div>`;
+  } else {
+    // Calculate cumulative debt vs 30-day avg
+    let cumDebt = 0;
+    const debtRows = recent.map(l => {
+      const s = getSleepTimes(l);
+      const dur = s ? s.durMins / 60 : null;
+      if (dur != null) cumDebt += dur - avgDur;
+      return { date: l.date, dur, debt: +cumDebt.toFixed(1) };
+    }).filter(r => r.dur != null);
+    const lastDebt = debtRows[debtRows.length-1]?.debt || 0;
+    const color = lastDebt >= 0 ? accent : red;
+    debtEl.innerHTML = `<div style="text-align:center;margin-bottom:14px">
+      <div style="font-family:var(--font-display);font-size:32px;color:${color}">${lastDebt >= 0 ? '+' : ''}${lastDebt}h</div>
+      <div style="font-size:12.5px;color:var(--text3);margin-top:4px">${lastDebt >= 0 ? 'Surplus vs your avg — well rested' : 'Deficit vs your avg — carry forward'}</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:4px">
+      ${debtRows.slice(-7).map(r => {
+        const barVal = Math.min(Math.abs(r.debt), 10);
+        const barColor = r.debt >= 0 ? accent : red;
+        return `<div style="display:flex;align-items:center;gap:8px;font-size:12px">
+          <div style="color:var(--text3);min-width:36px">${r.date.slice(5)}</div>
+          <div style="flex:1;height:8px;background:var(--surface3);border-radius:99px;overflow:hidden">
+            <div style="height:100%;width:${barVal*10}%;background:${barColor};border-radius:99px"></div>
+          </div>
+          <div style="color:var(--text2);min-width:40px;text-align:right">${r.debt >= 0 ? '+' : ''}${r.debt}h</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  }
+
+  // ── Energy response ──
+  const energyEl = document.getElementById('sleep-energy-response');
+  const sortedFull = [...logs].sort((a,b)=>a.date.localeCompare(b.date));
+  const brackets = [
+    { label: 'Under 6h', min: 0, max: 6 },
+    { label: '6 – 7h', min: 6, max: 7 },
+    { label: '7 – 8h', min: 7, max: 8 },
+    { label: '8h+', min: 8, max: 24 },
+  ];
+  const energyRows = brackets.map(b => {
+    const nights = sortedFull.filter((l,i) => {
+      const s = getSleepTimes(l);
+      if (!s) return false;
+      const h = s.durMins / 60;
+      return h >= b.min && h < b.max;
+    });
+    const nextDayEnergies = nights.map(l => {
+      const idx = sortedFull.findIndex(x=>x.date===l.date);
+      return idx >= 0 && idx < sortedFull.length-1 ? sortedFull[idx+1].mood?.morningEnergy : null;
+    }).filter(Boolean);
+    return { label: b.label, n: nights.length, avgEnergy: nextDayEnergies.length ? +avg(nextDayEnergies).toFixed(1) : null };
+  }).filter(r => r.n > 0);
+
+  if (!energyRows.length) {
+    energyEl.innerHTML = `<div class="gut-placeholder"><i class="ti ti-clock"></i>Not enough data yet.</div>`;
+  } else {
+    energyEl.innerHTML = `<table class="sleep-energy-table">
+      <tr><th>Sleep duration</th><th>Nights</th><th>Next morning energy</th></tr>
+      ${energyRows.map(r => `<tr>
+        <td>${r.label}</td>
+        <td style="color:var(--text3)">${r.n}</td>
+        <td>${r.avgEnergy ? r.avgEnergy+'/5' : '—'}</td>
+      </tr>`).join('')}
+    </table>`;
+  }
+}
+
 
 function renderCharts() {
   if(!logs.length) return;
@@ -1426,15 +1770,6 @@ function renderCharts() {
     const canvas=document.getElementById(id);if(!canvas)return;
     chartInstances[id]=new Chart(canvas,{type,data,options:{...baseOpts(opts.yLbl),plugins:{legend:{display:!!opts.legend,labels:{font:{family:'DM Sans',size:11},color:text3,boxWidth:10}}},...(opts.extra||{})}});
   };
-  // Sleep — with avg reference line
-  const sleepData=recent.map(l=>{const sl=l.sleeps||[];const m=sl.reduce((a,s)=>{if(!s?.start||!s?.end)return a;const[sh,sm]=s.start.split(':').map(Number),[eh,em]=s.end.split(':').map(Number);let mn=(eh*60+em)-(sh*60+sm);if(mn<0)mn+=1440;return a+mn},0);return m>0?+(m/60).toFixed(1):null;});
-  const validSleep=sleepData.filter(Boolean);
-  const avgSleepVal=validSleep.length?+(validSleep.reduce((a,b)=>a+b,0)/validSleep.length).toFixed(1):null;
-  if(avgSleepVal){document.getElementById('sleep-chart-sub').textContent=`Hours per night · avg ${avgSleepVal}h`;}
-  mkChart('chart-sleep','line',{labels,datasets:[
-    {label:'Hours',data:sleepData,borderColor:plum,backgroundColor:plum+'22',borderWidth:2,pointRadius:3,fill:true,tension:0.3,spanGaps:true},
-    avgSleepVal?{label:'30-day avg',data:recent.map(()=>avgSleepVal),borderColor:plum+'66',borderWidth:1.5,borderDash:[5,5],pointRadius:0,fill:false,spanGaps:true}:null
-  ].filter(Boolean)},plum,{legend:false});
   // Energy
   mkChart('chart-energy','line',{labels,datasets:[{label:'Morning',data:recent.map(l=>l.mood?.morningEnergy||null),borderColor:accent,backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:0.3,spanGaps:true},{label:'Evening',data:recent.map(l=>l.mood?.eveningEnergy||null),borderColor:gold,backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:0.3,spanGaps:true}]},accent,{legend:true});
   // Steps
