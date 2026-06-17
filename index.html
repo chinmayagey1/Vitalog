@@ -371,6 +371,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
   /* Sleep tab mobile */
   #sleep-summary-row{grid-template-columns:1fr 1fr !important}
   .sleep-compare-row{gap:8px}
+  .sleep-insights-grid{grid-template-columns:1fr !important}
   .chart-grid{grid-template-columns:1fr}
 }
 </style>
@@ -705,14 +706,14 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
           <!-- Bedtime chart -->
           <div class="chart-card">
             <div class="chart-title">Bedtime</div>
-            <div class="chart-sub">🟢 Before 11pm &nbsp; 🟡 11pm–12am &nbsp; 🔴 After 12am</div>
+            <div class="chart-sub" id="bedtime-legend">Loading…</div>
             <div class="chart-wrap"><canvas id="chart-bedtime"></canvas></div>
           </div>
 
           <!-- Wake-up chart -->
           <div class="chart-card">
             <div class="chart-title">Wake-up time</div>
-            <div class="chart-sub">🟢 Before 7am &nbsp; 🟡 7–8am &nbsp; 🔴 After 8am</div>
+            <div class="chart-sub" id="wakeup-legend">Loading…</div>
             <div class="chart-wrap"><canvas id="chart-wakeup"></canvas></div>
           </div>
 
@@ -724,8 +725,8 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
           </div>
         </div>
 
-        <!-- Insights row -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+        <!-- Insights row: weekday vs weekend + consistency side by side -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px" class="sleep-insights-grid">
           <!-- Weekday vs weekend -->
           <div class="chart-card">
             <div class="chart-title" style="margin-bottom:4px">Weekday vs weekend</div>
@@ -740,18 +741,20 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
           </div>
         </div>
 
-        <!-- Sleep debt -->
-        <div class="chart-card" style="margin-bottom:16px">
-          <div class="chart-title" style="margin-bottom:4px">Sleep debt tracker</div>
-          <div class="chart-sub" style="margin-bottom:14px">Cumulative shortfall vs your 30-day average sleep duration</div>
-          <div id="sleep-debt"></div>
-        </div>
-
-        <!-- Energy after sleep duration -->
-        <div class="chart-card">
-          <div class="chart-title" style="margin-bottom:4px">Your energy response to sleep duration</div>
-          <div class="chart-sub" style="margin-bottom:14px">Average morning energy after different amounts of sleep</div>
-          <div id="sleep-energy-response"></div>
+        <!-- Sleep debt + energy side by side on desktop -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px" class="sleep-insights-grid">
+          <!-- Sleep debt -->
+          <div class="chart-card">
+            <div class="chart-title" style="margin-bottom:4px">Sleep debt tracker</div>
+            <div class="chart-sub" style="margin-bottom:14px">Cumulative shortfall vs your 30-day average</div>
+            <div id="sleep-debt"></div>
+          </div>
+          <!-- Energy after sleep duration -->
+          <div class="chart-card">
+            <div class="chart-title" style="margin-bottom:4px">Energy response to sleep</div>
+            <div class="chart-sub" style="margin-bottom:14px">Average morning energy after different amounts of sleep</div>
+            <div id="sleep-energy-response"></div>
+          </div>
         </div>
       </div>
 
@@ -1503,9 +1506,9 @@ function minsToTime(mins) {
   if (mins == null) return '—';
   const h = Math.floor(mins / 60) % 24;
   const m = mins % 60;
-  const ampm = h >= 12 ? 'pm' : 'am';
+  const ampm = h >= 12 ? ' pm' : ' am';
   const h12 = h % 12 || 12;
-  return `${h12}:${String(m).padStart(2,'0')}${ampm}`;
+  return m === 0 ? `${h12}${ampm}` : `${h12}:${String(m).padStart(2,'0')}${ampm}`;
 }
 
 function getSleepTimes(l) {
@@ -1585,8 +1588,8 @@ function renderSleepTab() {
       const h24 = Math.floor(totalMins / 60) % 24;
       const m = totalMins % 60;
       const h12 = h24 % 12 || 12;
-      const ampm = h24 >= 12 ? 'pm' : 'am';
-      return `${h12}:${String(m).padStart(2,'0')}${ampm}`;
+      const ampm = h24 >= 12 ? ' pm' : ' am';
+      return m === 0 ? `${h12}${ampm}` : `${h12}:${String(m).padStart(2,'0')}${ampm}`;
     };
     chartInstances['chart-bedtime'] = new Chart(bedCanvas, {
       type: 'bar',
@@ -1603,6 +1606,9 @@ function renderSleepTab() {
         }
       }
     });
+    // Set legend with actual chart colours
+    const bedLeg = document.getElementById('bedtime-legend');
+    if (bedLeg) bedLeg.innerHTML = `<span style="display:inline-flex;align-items:center;gap:5px;margin-right:12px"><span style="width:10px;height:10px;border-radius:50%;background:${accent};display:inline-block"></span>Before 11 pm</span><span style="display:inline-flex;align-items:center;gap:5px;margin-right:12px"><span style="width:10px;height:10px;border-radius:50%;background:${gold};display:inline-block"></span>11 pm – 12 am</span><span style="display:inline-flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:50%;background:${red};display:inline-block"></span>After 12 am</span>`;
   }
 
   // ── Wake-up chart ──
@@ -1621,7 +1627,7 @@ function renderSleepTab() {
       const totalMins = Math.round(v * 60);
       const h = Math.floor(totalMins / 60) % 24;
       const m = totalMins % 60;
-      return `${h}:${String(m).padStart(2,'0')}am`;
+      return m === 0 ? `${h} am` : `${h}:${String(m).padStart(2,'0')} am`;
     };
     chartInstances['chart-wakeup'] = new Chart(wakeCanvas, {
       type: 'bar',
@@ -1638,6 +1644,8 @@ function renderSleepTab() {
         }
       }
     });
+    const wakeLeg = document.getElementById('wakeup-legend');
+    if (wakeLeg) wakeLeg.innerHTML = `<span style="display:inline-flex;align-items:center;gap:5px;margin-right:12px"><span style="width:10px;height:10px;border-radius:50%;background:${accent};display:inline-block"></span>Before 7 am</span><span style="display:inline-flex;align-items:center;gap:5px;margin-right:12px"><span style="width:10px;height:10px;border-radius:50%;background:${gold};display:inline-block"></span>7 – 8 am</span><span style="display:inline-flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:50%;background:${red};display:inline-block"></span>After 8 am</span>`;
   }
 
   // ── Quality chart ──
