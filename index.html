@@ -273,13 +273,13 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .sleep-debt-fill{height:100%;border-radius:99px;transition:width 0.4s}
 .sleep-energy-table{width:100%;border-collapse:collapse}
 .sleep-energy-table th{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;padding:6px 8px;text-align:left;border-bottom:1px solid var(--border)}
-.sleep-energy-table td{font-size:13px;color:var(--text2);padding:8px;border-bottom:1px solid var(--border)}
-.sleep-energy-table td:last-child{font-weight:600;color:var(--text);text-align:right}
+.sleep-energy-table td{font-size:13px;color:var(--text2);padding:8px;border-bottom:1px solid var(--border);text-align:left}
+.sleep-energy-table td:last-child{font-weight:600;color:var(--text);text-align:left}
 .sleep-energy-table tr:last-child td{border-bottom:none}
-.consistency-week{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+.consistency-week{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;min-width:0}
 .consistency-week:last-child{border-bottom:none}
-.consistency-label{color:var(--text2);flex:1}
-.consistency-val{font-weight:600;color:var(--text)}
+.consistency-label{color:var(--text2);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.consistency-val{font-weight:600;flex-shrink:0}
 .consistency-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 .gut-factor-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
 .gut-factor-row:last-child{border-bottom:none}
@@ -689,7 +689,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
           <div class="chart-card"><div class="chart-title">Energy levels</div><div class="chart-sub">Morning vs evening (1–5)</div><div class="chart-wrap"><canvas id="chart-energy"></canvas></div></div>
           <div class="chart-card"><div class="chart-title">Steps</div><div class="chart-sub">Daily step count</div><div class="chart-wrap"><canvas id="chart-steps"></canvas></div></div>
           <div class="chart-card"><div class="chart-title">Stress</div><div class="chart-sub">Stress level (1–5)</div><div class="chart-wrap"><canvas id="chart-stress"></canvas></div></div>
-          <div class="chart-card" style="grid-column:1/-1"><div class="chart-title">Gut health</div><div class="chart-sub" id="gut-chart-sub">Daily rating</div><div class="chart-wrap"><canvas id="chart-gut"></canvas></div></div>
+          <div class="chart-card"><div class="chart-title">Gut health</div><div class="chart-sub" id="gut-chart-sub">Daily rating</div><div class="chart-wrap"><canvas id="chart-gut"></canvas></div></div>
         </div>
       </div>
 
@@ -705,14 +705,14 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
           <!-- Bedtime chart -->
           <div class="chart-card">
             <div class="chart-title">Bedtime</div>
-            <div class="chart-sub">When you fell asleep · green before 11pm, amber 11–12, red after 12</div>
+            <div class="chart-sub">🟢 Before 11pm &nbsp; 🟡 11pm–12am &nbsp; 🔴 After 12am</div>
             <div class="chart-wrap"><canvas id="chart-bedtime"></canvas></div>
           </div>
 
           <!-- Wake-up chart -->
           <div class="chart-card">
             <div class="chart-title">Wake-up time</div>
-            <div class="chart-sub">When you woke up · green before 7am, amber 7–8, red after 8</div>
+            <div class="chart-sub">🟢 Before 7am &nbsp; 🟡 7–8am &nbsp; 🔴 After 8am</div>
             <div class="chart-wrap"><canvas id="chart-wakeup"></canvas></div>
           </div>
 
@@ -1580,12 +1580,28 @@ function renderSleepTab() {
   if (chartInstances['chart-bedtime']) chartInstances['chart-bedtime'].destroy();
   const bedCanvas = document.getElementById('chart-bedtime');
   if (bedCanvas) {
+    const bedTimeLabel = v => {
+      const totalMins = Math.round(v * 60);
+      const h24 = Math.floor(totalMins / 60) % 24;
+      const m = totalMins % 60;
+      const h12 = h24 % 12 || 12;
+      const ampm = h24 >= 12 ? 'pm' : 'am';
+      return `${h12}:${String(m).padStart(2,'0')}${ampm}`;
+    };
     chartInstances['chart-bedtime'] = new Chart(bedCanvas, {
       type: 'bar',
       data: { labels, datasets: [{ data: bedtimeData, backgroundColor: bedColors, borderRadius: 3 }] },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
-        scales: { x: { ticks: { font: { family: 'DM Sans', size: 10 }, color: text3, maxRotation: 45 }, grid: { color: border } },
-          y: { min: 21, max: 27, ticks: { callback: v => { const h = v % 24; const ampm = v >= 24 ? 'am' : 'pm'; return (h||12)+ampm; }, font: { family: 'DM Sans', size: 10 }, color: text3 }, grid: { color: border } } } }
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => bedTimeLabel(ctx.raw) } }
+        },
+        scales: {
+          x: { ticks: { font: { family: 'DM Sans', size: 10 }, color: text3, maxRotation: 45 }, grid: { color: border } },
+          y: { min: 21, max: 27, ticks: { callback: v => bedTimeLabel(v), font: { family: 'DM Sans', size: 10 }, color: text3, stepSize: 1 }, grid: { color: border } }
+        }
+      }
     });
   }
 
@@ -1601,12 +1617,26 @@ function renderSleepTab() {
   if (chartInstances['chart-wakeup']) chartInstances['chart-wakeup'].destroy();
   const wakeCanvas = document.getElementById('chart-wakeup');
   if (wakeCanvas) {
+    const wakeTimeLabel = v => {
+      const totalMins = Math.round(v * 60);
+      const h = Math.floor(totalMins / 60) % 24;
+      const m = totalMins % 60;
+      return `${h}:${String(m).padStart(2,'0')}am`;
+    };
     chartInstances['chart-wakeup'] = new Chart(wakeCanvas, {
       type: 'bar',
       data: { labels, datasets: [{ data: wakeData, backgroundColor: wakeColors, borderRadius: 3 }] },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
-        scales: { x: { ticks: { font: { family: 'DM Sans', size: 10 }, color: text3, maxRotation: 45 }, grid: { color: border } },
-          y: { min: 4, max: 11, ticks: { callback: v => v+'am', font: { family: 'DM Sans', size: 10 }, color: text3 }, grid: { color: border } } } }
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => wakeTimeLabel(ctx.raw) } }
+        },
+        scales: {
+          x: { ticks: { font: { family: 'DM Sans', size: 10 }, color: text3, maxRotation: 45 }, grid: { color: border } },
+          y: { min: 4, max: 11, ticks: { callback: v => wakeTimeLabel(v), font: { family: 'DM Sans', size: 10 }, color: text3, stepSize: 1 }, grid: { color: border } }
+        }
+      }
     });
   }
 
@@ -1672,11 +1702,19 @@ function renderSleepTab() {
     }).filter(Boolean);
     consEl.innerHTML = weekConsistency.map(w => {
       const color = w.stdDev < 30 ? accent : w.stdDev < 60 ? gold : red;
-      const label = w.stdDev < 30 ? 'Consistent' : w.stdDev < 60 ? 'Moderate variation' : 'High variation';
+      const label = w.stdDev < 30 ? 'Consistent' : w.stdDev < 60 ? 'Moderate' : 'High variation';
+      // Format dates as "1 Jun – 7 Jun"
+      const [startDate, endDate] = w.label.split(' – ');
+      const fmtDate = str => {
+        const [m,d] = str.split('-');
+        const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        return parseInt(d) + ' ' + months[parseInt(m)-1];
+      };
+      const formattedLabel = fmtDate(startDate) + ' – ' + fmtDate(endDate);
       return `<div class="consistency-week">
         <div class="consistency-dot" style="background:${color}"></div>
-        <div class="consistency-label">${w.label}</div>
-        <div class="consistency-val" style="color:${color}">${label}</div>
+        <div class="consistency-label">${formattedLabel}</div>
+        <div class="consistency-val" style="color:${color};flex-shrink:0">${label}</div>
       </div>`;
     }).join('');
   }
